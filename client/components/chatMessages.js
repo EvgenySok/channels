@@ -30,7 +30,7 @@ const ChatMessages = () => {
   return (
     <div>
       {messages.map((message) => (
-        <div className="flex items-start mb-4" key="message.id">
+        <div className="flex items-start mb-4" key={message.id}>
           <img src={message.img} className="w-10 h-10 rounded mr-3" alt={message.name} />
           <div className="flex flex-col">
             <div className="flex items-end">

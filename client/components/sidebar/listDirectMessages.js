@@ -27,9 +27,9 @@ const ListDirectMessages = () => {
       {arrayDirectMessages.map((member) => (
         <div key={member.id} className="flex items-center mb-3 px-4">
           <span className={`${member.isOnlin ? 'bg-green-400' : 'border'} rounded-full block w-2 h-2 mr-2`} />
-          <span className="text-purple-300">
+          <span>
             {member.name}
-            {member.isMe ? <i className="text-grey text-sm">(me)</i> : ''}
+            {member.isMe ? <i className="text-sm">(me)</i> : ''}
           </span>
         </div>
       ))}

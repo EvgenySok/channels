@@ -1,9 +1,22 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 const TopBar = () => {
   const currentCannel = {
     name: '#general',
     discribe: 'Chit-chattin about ugly HTML and mixing of concerns.',
+  }
+
+  const [inputSerch, setInputSearch] = useState('')
+
+  const controlInput = (e) => {
+    e.preventDefault()
+    setInputSearch(e.target.value)
+  }
+
+  const startSearch = (e) => {
+    if (e.key === 'Enter') {
+      setInputSearch('')
+    }
   }
 
   return (
@@ -14,7 +27,14 @@ const TopBar = () => {
           <div className="text-grey font-thin text-sm">{currentCannel.discribe}</div>
         </div>
         <div className="ml-auto hidden md:block">
-          <input type="search" placeholder="Search" className="border border-grey rounded-lg p-2" />
+          <input
+            type="search"
+            placeholder="Search"
+            className="border border-grey rounded-lg p-2"
+            value={inputSerch}
+            onChange={controlInput}
+            onKeyPress={startSearch}
+          />
         </div>
       </div>
     </div>
