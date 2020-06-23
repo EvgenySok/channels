@@ -4,7 +4,6 @@ import thunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import { createBrowserHistory } from 'history'
 import rootReducer from './reducers/rootReducer'
-import logger from './logger'
 
 export const history = createBrowserHistory()
 
@@ -17,7 +16,6 @@ export default function configureStore(preloadedState) {
     composeFunc(
       applyMiddleware(routerMiddleware(history),
         thunk,
-        logger
       )
     )
   )

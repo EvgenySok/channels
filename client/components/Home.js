@@ -4,6 +4,7 @@ import Sidebar from './sideBar'
 import TopBar from './topBar'
 import ChatMessages from './chatMessages'
 import InputMessage from './inputMessage'
+import LoginForm from './loginForm'
 // import { useDispatch, useSelector } from 'react-redux'
 
 // import { uploadProductList } from '../redux/reducers/actions'
@@ -23,6 +24,7 @@ const Home = () => {
         <div className="w-full flex flex-col">
           <TopBar />
           <ChatMessages />
+          <LoginForm />
           <InputMessage />
         </div>
       </div>

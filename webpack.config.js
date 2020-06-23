@@ -41,7 +41,7 @@ const config = {
     contentBase: resolve(__dirname, 'dist'),
     watchContentBase: true,
     proxy: [{
-      context: ['/auth', '/api'], // () => true
+      context: ['/auth','/api/v1', '/api'], // () => true
       target: 'http://localhost:3000',
     }],
   },
@@ -84,7 +84,7 @@ const config = {
             ident: 'postcss',
             plugins: [
               require('tailwindcss'),
-              require('autoprefixer'),
+              // require('autoprefixer'),
             ],
           },
         },

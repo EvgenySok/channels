@@ -16,6 +16,7 @@ server.use(bodyParser.json({ limit: '50mb', extended: true }))
 server.use(bodyParser.urlencoded({ limit: '50mb', extended: true, parameterLimit: 50000 }))
 
 server.use('/api/webstore/v1', require('./routes/api-webstore-v1.js'))
+server.use('/api/v1/auth', require('./routes/api-v1-auth'))
 
 server.use('*', (req, res) => res.send('Request not found...'))
 
