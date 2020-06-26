@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import SidebarHeader from './sidebar/sidebarHeader'
 import ChannelsList from './sidebar/channelsList'
 import ListDirectMessages from './sidebar/listDirectMessages'
@@ -14,6 +15,8 @@ const Sidebar = () => (
     <div className="px-4 mb-3 font-sans">Direct Messages</div>
     <ListDirectMessages />
     <div className="px-4 mb-3 font-sans">Applications</div>
+    <Link to="/login">login </Link>
+    <Link to="/secret">secret </Link>
   </div>
 )
 export default Sidebar

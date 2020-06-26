@@ -7,6 +7,10 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const OptimizeCSSAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin')
 
+require('dotenv').config()
+
+const PORT = process.env.PORT || 5000
+
 const isDev = process.env.NODE_ENV === 'development'
 const isProd = !isDev
 
@@ -41,8 +45,8 @@ const config = {
     contentBase: resolve(__dirname, 'dist'),
     watchContentBase: true,
     proxy: [{
-      context: ['/auth','/api/v1', '/api'], // () => true
-      target: 'http://localhost:3000',
+      context: ['/api'],
+      target: `http://localhost:${PORT}`,
     }],
   },
 

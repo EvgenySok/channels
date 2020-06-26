@@ -1,17 +1,28 @@
+import Cookies from 'universal-cookie'
+
 import {
   UPDATE_FIRST_NAME_FIELD,
   UPDATE_LAST_NAME_FIELD,
   UPDATE_PASSWORD_FIELD,
   UPDATE_EMAIL_FIELD,
   LOGIN,
+  SET_MESSAGE_FOR_LOGIN_FORM,
 } from './types'
 
+const cookies = new Cookies()
+
 const inicialState = {
+  isLoginForm: true,
+  messages: [],
   firstName: '',
   lastName: '',
   email: '',
   password: '',
-  token: '',
+  token: cookies.get('token'),
+  user: {
+    firstName: '',
+    lastName: '',
+  },
 }
 
 const loginReducer = (state = inicialState, action) => {
@@ -28,8 +39,11 @@ const loginReducer = (state = inicialState, action) => {
     case UPDATE_PASSWORD_FIELD:
       return { ...state, password: action.payload }
 
+    case SET_MESSAGE_FOR_LOGIN_FORM:
+      return { ...state, messages: action.payload }
+
     case LOGIN:
-      return { ...state, token: action.payload }
+      return { ...state, token: action.payload.token, user: action.payload.user, password: '' }
 
     default:
       return state

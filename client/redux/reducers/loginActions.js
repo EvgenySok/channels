@@ -4,6 +4,8 @@ import {
   UPDATE_PASSWORD_FIELD,
   UPDATE_EMAIL_FIELD,
   LOGIN,
+  // CHANGE_ERRORS,
+  SET_MESSAGE_FOR_LOGIN_FORM,
 } from './types'
 
 export const updateFirstName = (firstName) => ({
@@ -26,7 +28,12 @@ export const updatePassword = (password) => ({
   payload: password,
 })
 
-export const signIn = () => {
+export const setMessages = (err) => ({
+  type: SET_MESSAGE_FOR_LOGIN_FORM,
+  payload: err,
+})
+
+export const register = () => {
   return (dispatch, getState) => {
     const { firstName, lastName, email, password } = getState().loginReducer
     fetch('api/v1/auth/registration', {
@@ -44,13 +51,61 @@ export const signIn = () => {
       .then((r) => (r.ok ? r : Promise.reject(r)))
       .then((r) => r.json())
       .then((data) => {
-        console.log('NOT error', data)
+        dispatch(setMessages(data))
+        dispatch(updatePassword(''))
+      })
+      .catch((data) => data.json().then((d) => dispatch(setMessages(d))))
+  }
+}
+
+export const signIn = () => {
+  return (dispatch, getState) => {
+    const { email, password } = getState().loginReducer
+    fetch('api/v1/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+    })
+      .then((r) => (r.ok ? r : Promise.reject(r)))
+      .then((r) => r.json())
+      .then((data) => {
         dispatch({
           type: LOGIN,
-          payload: data.token,
+          payload: {
+            token: data.token,
+            user: {
+              firstName: data.firstName,
+              lastName: data.lastName,
+            },
+          },
         })
       })
-      .catch((data) => data.json())
-      .then((data) => console.log('error', data))
+      .catch((data) => data.json().then((d) => dispatch(setMessages(d))))
+  }
+}
+
+export function trySignIn() {
+  return (dispatch) => {
+    fetch('/api/v1/auth/trySignIn')
+      .then((r) => r.json())
+      .then((data) => {
+        dispatch({
+          type: LOGIN,
+          payload: {
+            token: data.token,
+            user: {
+              firstName: data.firstName,
+              lastName: data.lastName,
+            },
+          },
+        })
+        // history.push('/private')
+      })
+      .catch((e) => e)
   }
 }

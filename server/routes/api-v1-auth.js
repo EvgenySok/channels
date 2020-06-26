@@ -7,7 +7,7 @@ const User = require('../models/user')
 const router = express.Router()
 require('dotenv').config()
 
-const { jwtSecret } = process.env
+const { SECRET_JWT } = process.env
 
 // /api/v1/auth/registration
 router.post(
@@ -22,7 +22,6 @@ router.post(
     try {
       const errors = validationResult(req)
       if (!errors.isEmpty()) {
-        // console.log(errors.array().map((it) => it.msg))
         return res.status(422).json(errors.array())
       }
 
@@ -31,7 +30,7 @@ router.post(
       const candidate = await User.findOne({ email })
 
       if (candidate) {
-        return res.status(400).json({ message: 'This user already exists' })
+        return res.status(400).json([{ msg: 'This user already exists', param: 'email' }])
       }
 
       const hashedPassword = await bcrypt.hash(password, 12)
@@ -39,9 +38,9 @@ router.post(
 
       await user.save()
 
-      res.status(201).json({ message: 'User created' })
+      return res.status(201).json([{ msg: 'User created', param: 'success' }])
     } catch (e) {
-      res.status(500).json({ message: 'Registration error' })
+      return res.status(500).json([{ msg: 'Registration error' }])
     }
   }
 )
@@ -64,24 +63,42 @@ router.post(
 
       const user = await User.findOne({ email })
 
-      if (user) {
-        return res.status(400).json({ message: 'User is not found' })
+      if (!user) {
+        return res.status(400).json([{ msg: 'User is not found', param: 'email' }])
       }
 
       const isMatch = await bcrypt.compare(password, user.password)
 
       if (!isMatch) {
-        return res.status(400).json({ message: 'Invalid password, try again' })
+        return res.status(400).json([{ msg: 'Invalid password, try again', param: 'password' }])
       }
 
-      const token = jwt.sign({ userId: user.id }, jwtSecret, { expiresIn: '48h' })
+      const jwt_payload = { userId: user.id }
+      const token = jwt.sign(jwt_payload, SECRET_JWT, { expiresIn: '48h' })
 
-      res.json({ token, userId: user.id })
+      res.cookie('token', token, { maxAge: 1000 * 60 * 60 * 24 * 2 })
+      return res.json({ token, status: 'ok', firstName: user.firstName, lastName: user.lastName })
     } catch (e) {
-      res.status(500).json({ message: 'Login error' })
+      return res.status(500).json([{ msg: 'Login error' }])
     }
   }
 )
+
+// /api/v1/auth/trySignIn
+router.get('/trySignIn', async (req, res) => {
+  try {
+    const jwtUser = jwt.verify(req.cookies.token, SECRET_JWT)
+    const user = await User.findById(jwtUser.userId)
+
+    const jwt_payload = { userId: user.id }
+    const token = jwt.sign(jwt_payload, SECRET_JWT, { expiresIn: '48h' })
+
+    res.cookie('token', token, { maxAge: 1000 * 60 * 60 * 24 * 2 })
+    return res.json({ token, status: 'ok', firstName: user.firstName, lastName: user.lastName })
+  } catch (e) {
+    return res.status(500).json(e)
+  }
+})
 
 router.use((req, res, next) => {
   res.send('API auth v1 not founde...')
