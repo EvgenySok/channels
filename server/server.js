@@ -4,17 +4,22 @@ const cookieParser = require('cookie-parser')
 const mongoose = require('mongoose')
 const passport = require('passport')
 const { resolve } = require('path')
+const cors = require('cors')
+const socketIo = require('socket.io')
 const passportJWT = require('./passport.js')
 
 const server = express()
+const connections = []
 
 require('dotenv').config()
 
 const PORT = process.env.PORT || 5000
-const { mongoUrl } = process.env
+const { MONGO_URL, ENABLE_SOCKETS } = process.env
 
 server.use(passport.initialize())
 passport.use('jwt', passportJWT.jwt)
+
+server.use(cors())
 
 server.use(express.static(resolve(__dirname, '../dist')))
 
@@ -26,20 +31,33 @@ server.use('/api/v1/auth', require('./routes/api-v1-auth'))
 
 server.use('*', (req, res) => res.send('Request not found...'))
 
-async function start() {
-  try {
-    await mongoose.connect(mongoUrl, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useCreateIndex: true,
-    })
-    server.listen(PORT, () => {
-      console.log(`Server has been started at http://localhost:${PORT}...`)
-    })
-  } catch (e) {
-    console.log('Server Error', e.message)
-    process.exit(1)
-  }
+try {
+  mongoose.connect(MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+  })
+} catch (e) {
+  console.log('Mongoose Error', e.message)
+  process.exit(1)
 }
 
-start()
+const app = server.listen(PORT)
+
+if (ENABLE_SOCKETS) {
+  const io = socketIo(app)
+
+  io.on('connection', (socket) => {
+    connections.push(socket)
+    console.log(`connection established via id: ${socket.id}`)
+
+    socket.on('event', (data) => ({ data })) // слушать событие и что-то делать потом
+    io.emit('broadcast', /* … */); // emit an event to all connected sockets
+    socket.emit('request', /* … */); // emit an event to the socket
+
+    socket.on('disconnect', () => {
+      console.log(`disconnected: ${socket.id}`)
+    })
+  })
+}
+console.log(`Server has been started at http://localhost:${PORT}...`)

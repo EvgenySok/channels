@@ -5,11 +5,13 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const HTMLWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
+const Dotenv = require('dotenv-webpack')
 const OptimizeCSSAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin')
 
 require('dotenv').config()
 
 const PORT = process.env.PORT || 5000
+const { ENABLE_SOCKETS } = process.env
 
 const isDev = process.env.NODE_ENV === 'development'
 const isProd = !isDev
@@ -18,10 +20,7 @@ const optimization = () => {
   if (isProd) {
     return {
       minimize: true,
-      minimizer: [
-        new TerserPlugin({ parallel: true }),
-        new OptimizeCSSAssetsWebpackPlugin()
-      ]
+      minimizer: [new TerserPlugin({ parallel: true }), new OptimizeCSSAssetsWebpackPlugin()],
     }
   }
   return {}
@@ -29,10 +28,7 @@ const optimization = () => {
 
 const config = {
   mode: 'development',
-  entry: [
-    'babel-polyfill',
-    resolve(__dirname, 'client/index.js'),
-  ],
+  entry: ['babel-polyfill', resolve(__dirname, 'client/index.js')],
   optimization: optimization(),
   output: {
     path: resolve(__dirname, 'dist'),
@@ -44,10 +40,14 @@ const config = {
     hot: isDev,
     contentBase: resolve(__dirname, 'dist'),
     watchContentBase: true,
-    proxy: [{
-      context: ['/api'],
-      target: `http://localhost:${PORT}`,
-    }],
+    historyApiFallback: true,
+    proxy: [
+      {
+        context: ['/api', '/socket.io'],
+        target: `http://localhost:${PORT}`,
+        ws: ENABLE_SOCKETS || false,
+      },
+    ],
   },
 
   module: {
@@ -74,25 +74,26 @@ const config = {
       },
       {
         test: /\.s[ac]ss$/,
-        use: [{
-          loader: MiniCssExtractPlugin.loader,
-          options: {
-            publicPath: '../',
-            hmr: isDev,
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              publicPath: '../',
+              hmr: isDev,
+            },
           },
-        },
           'css-loader',
-        {
-          loader: 'postcss-loader',
-          options: {
-            ident: 'postcss',
-            plugins: [
-              require('tailwindcss'),
-              // require('autoprefixer'),
-            ],
+          {
+            loader: 'postcss-loader',
+            options: {
+              ident: 'postcss',
+              plugins: [
+                require('tailwindcss'),
+                // require('autoprefixer'),
+              ],
+            },
           },
-        },
-          'sass-loader'
+          'sass-loader',
         ],
         exclude: /node_modules/,
       },
@@ -102,12 +103,13 @@ const config = {
           {
             loader: 'file-loader',
           },
-        ]
+        ],
       },
-    ]
+    ],
   },
   plugins: [
     new CleanWebpackPlugin(),
+    new Dotenv(),
     new MiniCssExtractPlugin({
       filename: '[name]-[hash:8].css',
       chunkFilename: '[id].css',
@@ -118,13 +120,13 @@ const config = {
       patterns: [
         { from: resolve(__dirname, 'client/assets/images'), to: 'images' },
         { from: resolve(__dirname, 'client/assets/fonts'), to: 'fonts' },
-      ]
+      ],
     }),
   ],
   stats: {
     entrypoints: false,
-    children: false
-  }
+    children: false,
+  },
 }
 
 module.exports = config

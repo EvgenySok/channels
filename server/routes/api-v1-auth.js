@@ -64,13 +64,13 @@ router.post(
       const user = await User.findOne({ email })
 
       if (!user) {
-        return res.status(400).json([{ msg: 'User is not found', param: 'email' }])
+        return res.status(400).json([{ msg: '', param: 'email' }])
       }
 
       const isMatch = await bcrypt.compare(password, user.password)
 
       if (!isMatch) {
-        return res.status(400).json([{ msg: 'Invalid password, try again', param: 'password' }])
+        return res.status(400).json([{ msg: 'Invalid password or e-mail, try again', param: 'password' }])
       }
 
       const jwt_payload = { userId: user.id }

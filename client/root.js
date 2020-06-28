@@ -4,13 +4,18 @@ import { ConnectedRouter } from 'connected-react-router'
 import { Switch, Route, Redirect } from 'react-router-dom'
 
 import configureStore, { history } from './redux/configStore'
+// import getSocket from './redux/configSocket'
+import SocketClient from './redux/SocketClient'
 
 import Home from './components/Home'
 import SecretPage from './components/SecretPage'
 
 import Startup from './startup'
 
-const store = configureStore()
+// const store = configureStore()
+// getSocket()
+const socketClient = new SocketClient()
+const store = configureStore(socketClient)
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const authed = useSelector((s) => s.loginReducer)
