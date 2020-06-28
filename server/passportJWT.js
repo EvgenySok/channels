@@ -23,4 +23,5 @@ const passportJWT = new JwtStrategy(opts, (jwt_payload, done) => {
     // or you could create a new account
   })
 })
-exports.jwt = passportJWT
+
+exports.passportJWT = passportJWT

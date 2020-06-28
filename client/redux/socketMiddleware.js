@@ -3,6 +3,10 @@ import io from 'socket.io-client'
 const socketMiddleware = (urlForSocket) => {
   let socket
   return (store) => (next) => (action) => {
+    if (typeof process.env.ENABLE_SOCKETS === 'undefined' && process.env.ENABLE_SOCKETS === false) {
+      return next(action)
+    }
+
     switch (action.type) {
       case 'LOGIN': {
         socket = io(urlForSocket)

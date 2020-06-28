@@ -109,3 +109,14 @@ export function trySignIn() {
       .catch((e) => e)
   }
 }
+
+export function tryGetUserInfo() {
+  return () => {
+    fetch('/api/v1/user-info')
+      .then((r) => r.json())
+      .then((data) => {
+        console.log(data)
+      })
+      .catch((e) => e)
+  }
+}

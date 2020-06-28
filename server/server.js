@@ -6,28 +6,31 @@ const passport = require('passport')
 const { resolve } = require('path')
 const cors = require('cors')
 const socketIo = require('socket.io')
-const passportJWT = require('./passport.js')
-
-const server = express()
-const connections = []
+const { passportJWT } = require('./passportJWT.js')
+const { role } = require('./validationUserRole.js')
 
 require('dotenv').config()
 
 const PORT = process.env.PORT || 5000
 const { MONGO_URL, ENABLE_SOCKETS } = process.env
 
-server.use(passport.initialize())
-passport.use('jwt', passportJWT.jwt)
+const server = express()
+const connections = []
 
 server.use(cors())
-
+server.use(passport.initialize())
 server.use(express.static(resolve(__dirname, '../dist')))
-
 server.use(bodyParser.json({ limit: '50mb', extended: true }))
 server.use(bodyParser.urlencoded({ limit: '50mb', extended: true, parameterLimit: 50000 }))
 server.use(cookieParser())
 
+passport.use('jwt', passportJWT)
+
 server.use('/api/v1/auth', require('./routes/api-v1-auth'))
+
+server.get('/api/v1/user-info', role(['admin']), (req, res) => {
+  res.json({ status: '123' })
+})
 
 server.use('*', (req, res) => res.send('Request not found...'))
 
