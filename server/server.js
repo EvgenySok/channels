@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 5000
 const { MONGO_URL, ENABLE_SOCKETS } = process.env
 
 const server = express()
-const connections = []
+let connections = []
 
 server.use(cors())
 server.use(passport.initialize())
@@ -54,13 +54,16 @@ if (ENABLE_SOCKETS) {
     connections.push(socket)
     console.log(`connection established via id: ${socket.id}`)
 
-    socket.on('event', (data) => ({ data })) // слушать событие и что-то делать потом
-    io.emit('broadcast', /* … */); // emit an event to all connected sockets
-    socket.emit('request', /* … */); // emit an event to the socket
+    // socket.on('event', (data) => ({ data })) // слушать событие и что-то делать потом
+    // io.emit('broadcast', /* … */); // emit an event to all connected sockets
+    // socket.emit('request', /* … */); // emit an event to the socket
 
     socket.on('disconnect', () => {
       console.log(`disconnected: ${socket.id}`)
+      const i = connections.indexOf(socket)
+      connections = connections.filter((cl, id) => id !== i)
     })
+
   })
 }
 console.log(`Server has been started at http://localhost:${PORT}...`)

@@ -43,7 +43,7 @@ const loginReducer = (state = inicialState, action) => {
       return { ...state, messages: action.payload }
 
     case LOGIN:
-      return { ...state, token: action.payload.token, user: action.payload.user, password: '' }
+      return { ...state, token: action.payload.token, user: action.payload.user, password: '', messages: [] }
 
     default:
       return state

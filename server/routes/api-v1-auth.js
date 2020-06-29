@@ -100,6 +100,19 @@ router.get('/trySignIn', async (req, res) => {
   }
 })
 
+// /api/v1/auth/signOut
+router.get('/signOut', (req, res) => {
+  try {
+    const cookie = req.cookies
+    Object.keys(cookie).forEach((prop) => {
+      res.cookie(prop, '', { expires: new Date(0) })
+    })
+    return res.json({ status: 'signOut' })
+  } catch (e) {
+    return res.json(e)
+  }
+})
+
 router.use((req, res, next) => {
   res.send('API auth v1 not founde...')
   next()

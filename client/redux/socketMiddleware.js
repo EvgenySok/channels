@@ -9,8 +9,12 @@ const socketMiddleware = (urlForSocket) => {
 
     switch (action.type) {
       case 'LOGIN': {
+        if (action.payload.token === '') {
+          socket.disconnect()
+          socket = null
+          break
+        }
         socket = io(urlForSocket)
-
         socket.on('message', (message) => {
           store.dispatch({
             type: 'SOCKET_MESSAGE_RECEIVED',

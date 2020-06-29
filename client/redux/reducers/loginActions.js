@@ -7,6 +7,7 @@ import {
   // CHANGE_ERRORS,
   SET_MESSAGE_FOR_LOGIN_FORM,
 } from './types'
+import history from '../history'
 
 export const updateFirstName = (firstName) => ({
   type: UPDATE_FIRST_NAME_FIELD,
@@ -105,6 +106,27 @@ export function trySignIn() {
           },
         })
         // history.push('/private')
+      })
+      .catch((e) => e)
+  }
+}
+
+export function signOut() {
+  return (dispatch) => {
+    fetch('/api/v1/auth/signOut')
+      .then((r) => r.json())
+      .then(() => {
+        dispatch({
+          type: LOGIN,
+          payload: {
+            token: '',
+            user: {
+              firstName: '',
+              lastName: '',
+            },
+          },
+        })
+        history.push('/')
       })
       .catch((e) => e)
   }
