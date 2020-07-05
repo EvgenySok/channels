@@ -8,16 +8,13 @@ import socketMiddleware from './socketMiddleware'
 
 export const history = createBrowserHistory()
 
-const isBrowser = typeof window !== 'undefined'
-const urlForSocket = `${isBrowser ? window.location.origin : `http://localhost:${process.env.PORT}`}/socket.io`
-
 const composeFunc = process.env.NODE_ENV === 'development' ? composeWithDevTools : compose
 
 export default function configureStore(preloadedState) {
   const store = createStore(
     createRootReducer(history),
     preloadedState,
-    composeFunc(applyMiddleware(routerMiddleware(history), socketMiddleware(urlForSocket), thunk))
+    composeFunc(applyMiddleware(routerMiddleware(history), socketMiddleware(), thunk))
   )
   return store
 }

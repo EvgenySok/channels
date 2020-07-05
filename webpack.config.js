@@ -43,7 +43,7 @@ const config = {
     historyApiFallback: true,
     proxy: [
       {
-        context: ['/api', '/socket.io'],
+        context: ['/api', '/socket.io/'],
         target: `http://localhost:${PORT}`,
         ws: ENABLE_SOCKETS || false,
       },
