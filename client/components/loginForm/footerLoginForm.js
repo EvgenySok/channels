@@ -1,6 +1,6 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
-import { signIn, signOut } from '../../redux/reducers/loginActions'
+import { signIn, signOut, setMessages } from '../../redux/reducers/loginActions'
 
 const FooterLoginForm = ({ isLoginForm, setIsLoginForm }) => {
   const dispatch = useDispatch()
@@ -22,7 +22,10 @@ const FooterLoginForm = ({ isLoginForm, setIsLoginForm }) => {
       </button>
       <a
         className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
-        onClick={() => setIsLoginForm(!isLoginForm)}
+        onClick={() => {
+          setIsLoginForm(!isLoginForm)
+          dispatch(setMessages([]))
+        }}
         href="#"
       >
         Go to register form

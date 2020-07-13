@@ -25,6 +25,8 @@ server.use(bodyParser.json({ limit: '50mb', extended: true }))
 server.use(bodyParser.urlencoded({ limit: '50mb', extended: true, parameterLimit: 50000 }))
 server.use(cookieParser())
 
+
+
 passport.use('jwt', passportJWT)
 
 const app = server.listen(PORT)
@@ -39,6 +41,8 @@ server.use('/api/v1/auth', require('./routes/api-v1-auth'))
 server.get('/api/v1/user-info', role(['admin']), (req, res) => {
   res.json({ status: '123' })
 })
+
+server.use('/registration-confirmation-mail/', require('./routes/registration-confirmation-mail'))
 
 server.use('*', (req, res) => res.send('Request not found...'))
 

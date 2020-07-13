@@ -2,7 +2,10 @@ const express = require('express')
 const { check, validationResult } = require('express-validator')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const shortid = require('shortid')
 const User = require('../models/user')
+const UsersWithoutConfirmation = require('../models/userWithoutConfirmation')
+const { sendMailToCompleteRegistration } = require('../services/nodemailer')
 
 const router = express.Router()
 require('dotenv').config()
@@ -34,13 +37,22 @@ router.post(
       }
 
       const hashedPassword = await bcrypt.hash(password, 12)
-      const user = new User({ firstName, lastName, email, password: hashedPassword })
-
+      const secretLinc = await bcrypt.hash(shortid.generate(), 12)
+      const user = new UsersWithoutConfirmation({ secretLinc, firstName, lastName, email, password: hashedPassword })
       await user.save()
 
-      return res.status(201).json([{ msg: 'User created', param: 'success' }])
+      const temporaryLinc = `http://localhost:8080/registration-confirmation-mail/${secretLinc}`
+
+      await sendMailToCompleteRegistration(email, temporaryLinc)
+
+      return res.status(201).json([
+        {
+          msg: 'User created. To complete the resistance, follow the link in the mail. Get it done in 30 minutes!!! ',
+          param: 'success',
+        },
+      ])
     } catch (e) {
-      return res.status(500).json([{ msg: 'Registration error' }])
+      return res.status(500).json([{ msg: 'Registration error', e: e.message }])
     }
   }
 )
@@ -63,14 +75,19 @@ router.post(
 
       const user = await User.findOne({ email })
 
+      const errorMessage = [
+        { msg: 'Invalid password or e-mail, try again', param: 'password' },
+        { msg: 'Invalid password or e-mail, try again', param: 'email' },
+      ]
+
       if (!user) {
-        return res.status(400).json([{ msg: '', param: 'email' }])
+        return res.status(400).json(errorMessage)
       }
 
       const isMatch = await bcrypt.compare(password, user.password)
 
       if (!isMatch) {
-        return res.status(400).json([{ msg: 'Invalid password or e-mail, try again', param: 'password' }])
+        return res.status(400).json(errorMessage)
       }
 
       const jwt_payload = { userId: user.id }
