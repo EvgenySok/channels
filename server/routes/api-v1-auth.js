@@ -10,7 +10,7 @@ const { sendMailToCompleteRegistration } = require('../services/nodemailer')
 const router = express.Router()
 require('dotenv').config()
 
-const { SECRET_JWT } = process.env
+const { SECRET_JWT, URL } = process.env
 
 // /api/v1/auth/registration
 router.post(
@@ -41,7 +41,7 @@ router.post(
       const user = new UsersWithoutConfirmation({ secretLinc, firstName, lastName, email, password: hashedPassword })
       await user.save()
 
-      const temporaryLinc = `http://localhost:8080/registration-confirmation-mail/${secretLinc}`
+      const temporaryLinc = `${URL}/registration-confirmation-mail/${secretLinc}`
 
       await sendMailToCompleteRegistration(email, temporaryLinc)
 
