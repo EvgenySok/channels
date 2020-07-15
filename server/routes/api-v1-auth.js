@@ -37,7 +37,9 @@ router.post(
       }
 
       const hashedPassword = await bcrypt.hash(password, 12)
-      const secretLinc = await bcrypt.hash(shortid.generate(), 12)
+      let secretLinc = await bcrypt.hash(shortid.generate(), 12)
+      secretLinc = [...secretLinc].filter(it => it !== '/').join('')
+      
       const user = new UsersWithoutConfirmation({ secretLinc, firstName, lastName, email, password: hashedPassword })
       await user.save()
 

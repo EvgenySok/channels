@@ -26,9 +26,9 @@ const PasswordField = () => {
         {passwordErr ? (
           <p className="login-form__bottom-text error-text">{passwordErr.msg}</p>
         ) : (
-          <p className="login-form__bottom-text">Enter password</p>
-        )}
-        {messageSuccessRegistr ? <p className="login-form__bottom-text saccess-text">{messageSuccessRegistr.msg}</p> : ''}
+            <p className="login-form__bottom-text">Enter password</p>
+          )}
+          {messageSuccessRegistr ? <p className="login-form__bottom-text saccess-text">{messageSuccessRegistr.msg}</p> : ''}
       </div>
     </>
   )
