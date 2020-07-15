@@ -10,15 +10,13 @@ const PasswordField = () => {
   const [passwordErr, messageSuccessRegistr] = ['password', 'success'].map((it) => messages.find((i) => i.param === it))
 
   return (
-    <div className="flex flex-wrap -mx-3 mb-6">
-      <div className="w-full px-3">
-        <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-password">
+    <>
+      <div className="password">
+        <label className="login-form__label" htmlFor="grid-password">
           Password
         </label>
         <input
-          className={`${
-            passwordErr ? 'border-red-500' : 'border-gray-200'
-          } appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white`}
+          className={`${passwordErr ? 'error-border' : ''} login-form__input`}
           id="grid-password"
           type="password"
           placeholder="******************"
@@ -26,13 +24,13 @@ const PasswordField = () => {
           onChange={(e) => dispatch(updatePassword(e.target.value.trim()))}
         />
         {passwordErr ? (
-          <p className="text-red-500 text-xs italic">{passwordErr.msg}</p>
+          <p className="login-form__bottom-text error-text">{passwordErr.msg}</p>
         ) : (
-          <p className="text-gray-600 text-xs italic">Enter password</p>
+          <p className="login-form__bottom-text">Enter password</p>
         )}
-        {messageSuccessRegistr ? <p className="text-green-500 text-xl italic">{messageSuccessRegistr.msg}</p> : ''}
+        {messageSuccessRegistr ? <p className="login-form__bottom-text saccess-text">{messageSuccessRegistr.msg}</p> : ''}
       </div>
-    </div>
+    </>
   )
 }
 

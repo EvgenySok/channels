@@ -5,23 +5,23 @@ import { signIn, signOut, setMessages } from '../../redux/reducers/loginActions'
 const FooterLoginForm = ({ isLoginForm, setIsLoginForm }) => {
   const dispatch = useDispatch()
   return (
-    <div className="flex items-center justify-between">
+    <div className="footer">
       <button
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+        className="button-blue"
         type="button"
         onClick={() => dispatch(signIn())}
       >
         Sign In
       </button>
       <button
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+        className="button-blue"
         type="button"
         onClick={() => dispatch(signOut())}
       >
         Sign out
       </button>
       <a
-        className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
+        className="link"
         onClick={() => {
           setIsLoginForm(!isLoginForm)
           dispatch(setMessages([]))
@@ -30,7 +30,7 @@ const FooterLoginForm = ({ isLoginForm, setIsLoginForm }) => {
       >
         Go to register form
       </a>
-      <a className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800" href="#">
+      <a className="link" href="#">
         Forgot Password?
       </a>
     </div>

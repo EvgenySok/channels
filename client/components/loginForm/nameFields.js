@@ -11,15 +11,13 @@ const NameFields = () => {
   const [firstNameErr] = ['firstName'].map((it) => messages.find((i) => i.param === it))
 
   return (
-    <div className="flex flex-wrap -mx-3 mb-6">
-      <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-        <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-first-name">
+    <div className="name-fields">
+      <div className="first-name">
+        <label className="login-form__label" htmlFor="grid-first-name">
           First Name
         </label>
         <input
-          className={`${
-            firstNameErr ? 'border-red-500' : 'border-gray-200'
-          } appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white`}
+          className={`${firstNameErr ? 'error-border' : ''} login-form__input`}
           id="grid-first-name"
           type="text"
           placeholder="Jane"
@@ -27,17 +25,17 @@ const NameFields = () => {
           onChange={(e) => dispatch(updateFirstName(e.target.value.trim()))}
         />
         {firstNameErr ? (
-          <p className="text-red-500 text-xs italic">{firstNameErr.msg}</p>
+          <p className="login-form__bottom-text error-text">{firstNameErr.msg}</p>
         ) : (
-          <p className="text-gray-600 text-xs italic">Please fill out this field.</p>
+          <p className="login-form__bottom-text">Please fill out this field.</p>
         )}
       </div>
-      <div className="w-full md:w-1/2 px-3">
-        <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-last-name">
+      <div className="last-name">
+        <label className="login-form__label" htmlFor="grid-last-name">
           Last Name
         </label>
         <input
-          className="border-gray-200 appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+          className="login-form__input"
           id="grid-last-name"
           type="text"
           placeholder="Doe"

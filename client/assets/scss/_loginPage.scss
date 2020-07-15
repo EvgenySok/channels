@@ -1,0 +1,104 @@
+.login-body {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  background-color: rgb(179, 209, 255);
+}
+
+.login-form {
+  background-color: rgb(255, 255, 255);
+  border-radius: 10px;
+  border: 2px solid $borderGray200;
+  padding: 2vw;
+  font-size: 24px;
+  margin: 2vw;
+  &__label {
+    text-transform: uppercase;
+    font-size: 16px;
+    font-weight: 700;
+    color: $textGray700;
+  }
+  &__input {
+    display: block;
+    text-transform: none;
+    font-size: 18px;
+    background-color: $bgGray200;
+    color: $textGray700;
+    border: 1px solid $borderGray300;
+    border-radius: 5px;
+    width: 100%;
+    padding: 1vw;
+    margin: 0.5vw 0;
+  }
+  &__bottom-text {
+    color: $textGray700;
+    font-style: italic;
+    font-size: 12px;
+  }
+  .name-fields {
+    display: flex;
+  }
+  .last-name {
+    margin: 0 0 0 10px;
+  }
+  .error-text {
+    color: $textRed500;
+  }
+  .saccess-text {
+    color: $textGreen500;
+  }
+  .error-border {
+    border-color: $borderRed500;
+  }
+  @media (max-width: 530px) {
+    .name-fields {
+      flex-direction: column;
+    }
+    .last-name {
+      margin: 0;
+    }
+  }
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px 0 0 0;
+  .button-blue {
+    background-color: $bgBlue500;
+    color: #fff;
+    font-weight: 500;
+    padding: 0.5vw 1vw;
+    border-radius: 5px;
+    &:hover {
+      background-color: $bgBlue700;
+    }
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+    }
+  }
+  .link {
+    font-weight: 500;
+    color: $bgBlue500;
+    font-size: 24px;
+    &:hover {
+      color: $bgBlue700;
+    }
+  }
+
+  @media (max-width: 767px) {
+    flex-direction: column;
+    .button-blue {
+      display: block;
+      width: 100%;
+    }
+    .link {
+      margin: 10px 0 0 0;
+    }
+  }
+}

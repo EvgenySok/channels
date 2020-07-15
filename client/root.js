@@ -6,10 +6,10 @@ import { Switch, Route, Redirect } from 'react-router-dom'
 import configureStore, { history } from './redux/configStore'
 // import getSocket from './redux/configSocket'
 
-import Home from './components/Home'
-import SecretPage from './components/SecretPage'
-
 import Startup from './startup'
+import Home from './pages/Home'
+import LoginPage from './pages/LoginPage'
+import SecretPage from './pages/SecretPage'
 
 const store = configureStore()
 // getSocket()
@@ -28,7 +28,7 @@ const Root = () => {
         <Startup>
           <Switch>
             <Route exact path="/" component={() => <Home />} />
-            <Route exact path="/login" component={() => <Home />} />
+            <Route exact path="/login" component={() => <LoginPage />} />
             <PrivateRoute exact path="/secret" component={() => <SecretPage />} />
             <Route component={() => <Home />} />
           </Switch>

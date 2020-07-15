@@ -2,7 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-// @import 'nullstyle.scss';
+@import "_mixins.scss";
+
+@import '_const.scss';
+
+@import '_nullstyle.scss';
+@import '_loginPage.scss';
+
+
+
 
 body {
   background: white;

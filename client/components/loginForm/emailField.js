@@ -11,15 +11,14 @@ const EmailField = () => {
   const [emailErr] = ['email'].map((it) => messages.find((i) => i.param === it))
 
   return (
-    <div className="flex flex-wrap -mx-3 mb-6">
-      <div className="w-full px-3">
-        <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-email">
+    <>
+      <div className="email">
+        <label className="login-form__label" htmlFor="grid-email">
           E-mail
         </label>
         <input
           className={`${
-            emailErr ? 'border-red-500' : 'border-gray-200'
-          } appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white`}
+            emailErr ? 'error-border' : ''} login-form__input`}
           id="grid-email"
           type="text"
           placeholder="e-mail"
@@ -27,12 +26,12 @@ const EmailField = () => {
           onChange={(e) => dispatch(updateEmail(e.target.value.trim()))}
         />
         {emailErr ? (
-          <p className="text-red-500 text-xs italic">{emailErr.msg}</p>
+          <p className="login-form__bottom-text error-text">{emailErr.msg}</p>
         ) : (
-          <p className="text-gray-600 text-xs italic">Enter your email</p>
+          <p className="login-form__bottom-text">Enter your email</p>
         )}
       </div>
-    </div>
+    </>
   )
 }
 
