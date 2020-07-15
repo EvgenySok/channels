@@ -42,7 +42,7 @@ server.get('/api/v1/user-info', role(['admin']), (req, res) => {
   res.json({ status: '123' })
 })
 
-server.use('/registration-confirmation-mail/', require('./routes/registration-confirmation-mail'))
+server.use('/registration-confirmation-mail', require('./routes/registration-confirmation-mail'))
 
 server.use('*', (req, res) => res.send('Request not found...'))
 
