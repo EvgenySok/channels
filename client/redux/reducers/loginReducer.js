@@ -14,14 +14,13 @@ const cookies = new Cookies()
 const inicialState = {
   isLoginForm: true,
   messages: [],
-  firstName: '',
-  lastName: '',
   email: '',
   password: '',
   token: cookies.get('token'),
   user: {
     firstName: '',
     lastName: '',
+    userId: '',
   },
 }
 

@@ -1,0 +1,30 @@
+.chat-messages {
+  flex: 1 1 auto;
+  overflow: auto;
+
+  .message {
+    display: flex;
+    margin-bottom: 5px;
+    img{
+      height: 35px;
+      width: 35px;
+      margin-right: 5px;
+    }
+    &__content{
+      display: flex;
+      flex-direction: column;
+      &__name{
+        font-weight: 500;
+        margin-right: 5px;
+      }
+      &__time{
+        font-size: 12px;
+      }
+      &__text{
+        padding-top: 3px;
+        font-size: 14px;
+        color: $textGray700;
+      }
+    }
+  }
+}

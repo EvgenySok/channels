@@ -1,0 +1,66 @@
+.sidebar {
+  background-color: $bgBlue800;
+  color: $textBlue100;
+  flex: 1 0 auto;
+  &__header {
+    color: white;
+    font-size: 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1vw;
+    .bell {
+      width: 22px;
+      fill: $textBlue100;
+    }
+  }
+  &__user-name {
+    display: flex;
+    position: relative;
+    align-items: center;
+    padding: 6px 15px;
+    margin-bottom: 5px;
+  }
+  &__channels-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1vw;
+    }
+    .channels-add {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      fill: currentColor;
+      &:hover {
+        fill: $bgBlue500;
+      }
+      &:focus {
+        outline: none;
+        fill: $bgGreen500;
+      }
+    }
+    .channels-header {
+      opacity: 75%;
+  }
+
+  .channels-list {
+    padding: 6px 15px;
+    margin-bottom: 5px;
+  }
+  .current-channel {
+    background-color: $bgTeel600;
+  }
+  .dot {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border: 1px solid $borderGray300;
+    border-radius: 50%;
+    margin: 0 10px 0 0px;
+    &__online {
+      background-color: $bgGreen500;
+      border: 0;
+    }
+  }
+}

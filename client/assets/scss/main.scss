@@ -8,10 +8,9 @@
 
 @import '_nullstyle.scss';
 @import '_loginPage.scss';
-
-
-
-
-body {
-  background: white;
-}
+@import '_mainPage.scss';
+@import '_sidebar.scss';
+@import '_top-bar.scss';
+@import '_chat_messages.scss'; 
+@import '_input-message.scss'; 
+@import '_test-input.scss'; 

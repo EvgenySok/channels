@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { signOut } from '../redux/reducers/loginActions'
 
 const TopBar = () => {
-  const currentCannel = {
-    name: '#general',
-    discribe: 'Chit-chattin about ugly HTML and mixing of concerns.',
-  }
+  const { name, description } = useSelector((store) => store.messageReducer.currentChannel)
+  const dispatch = useDispatch()
 
   const [inputSerch, setInputSearch] = useState('')
 
@@ -21,20 +21,25 @@ const TopBar = () => {
 
   return (
     <div>
-      <div className="border-b flex px-6 py-2 items-center">
-        <div className="flex flex-col">
-          <h2 className="text-grey-600 text-md mb-1 font-extrabold">{currentCannel.name}</h2>
-          <div className="text-grey font-thin text-sm">{currentCannel.discribe}</div>
+      <div className="top-bar">
+        <div className="top-bar__titlel">
+          <h2 className="top-bar__title__header">{name}</h2>
+          <div className="top-bar__title__discrip">{description}</div>
         </div>
-        <div className="ml-auto hidden md:block">
+        <div className="top-bar__search">
           <input
             type="search"
             placeholder="Search"
-            className="border border-grey rounded-lg p-2"
+            className="top-bar__search__input"
             value={inputSerch}
             onChange={controlInput}
             onKeyPress={startSearch}
           />
+          <div className="top-bar__title__discrip">
+            <a href="#" onClick={() => dispatch(signOut())}>
+              Sign out
+            </a>
+          </div>
         </div>
       </div>
     </div>

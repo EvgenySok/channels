@@ -1,10 +1,21 @@
 import React from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { updateCurrentChannel } from '../../redux/reducers/messageActions'
 
-const ChannelsList = () => (
-  <div>
-    <div className="bg-teal-600 mb-6 py-1 px-4 text-white font-semi-bold ">
-      <span className="pr-1 text-grey-300">#</span> general
+const ChannelsList = () => {
+  const dispatch = useDispatch()
+  const { channels, currentChannel } = useSelector((store) => store.messageReducer)
+
+  return channels.map((channel) => (
+    // channel = [channelId, name, description]
+    <div
+      key={channel[0]}
+      className={`${currentChannel.channelId === channel[0] ? 'current-channel' : ''} channels-list`}
+    >
+      <a href="#" onClick={() => dispatch(updateCurrentChannel(channel))}>
+        {currentChannel.channelId === channel[0] ? <span className="">#</span> : ''} {channel[1]}
+      </a>
     </div>
-  </div>
-)
+  ))
+}
 export default ChannelsList

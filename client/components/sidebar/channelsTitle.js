@@ -8,16 +8,16 @@ const ChannelsTitle = () => {
   }
 
   return (
-    <div className="px-4 mb-2 text-white flex justify-between items-center">
-      <div className="opacity-75">Channels</div>
+    <div className="sidebar__channels-title">
+      <div className="channels-header">Channels</div>
       <div
-        className="focus:outline-none focus:shadow-outline rounded-full"
+        className="channels-add"
         role="button"
         tabIndex={0}
         onClick={addChannel}
         onKeyDown={addChannel}
       >
-        <svg className="fill-current h-4 w-4 opacity-50" viewBox="0 0 20 20">
+        <svg className="" viewBox="0 0 20 20">
           <path d="M11 9h4v2h-4v4H9v-4H5V9h4V5h2v4zm-1 11a10 10 0 1 1 0-20 10 10 0 0 1 0 20zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16z" />
         </svg>
       </div>

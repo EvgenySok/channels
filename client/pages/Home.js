@@ -13,10 +13,10 @@ const Home = () => {
   // }
 
   return (
-    <div className="w-full border shadow">
-      <div className="flex min-h-screen">
+    <div className="">
+      <div className="main-page">
         <Sidebar />
-        <div className="w-full flex flex-col">
+        <div className="main-page__right">
           <TopBar />
           <ChatMessages />
           <InputMessage />

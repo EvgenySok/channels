@@ -76,10 +76,10 @@ const config = {
         test: /\.s[ac]ss$/,
         use: [
           {
-            loader: MiniCssExtractPlugin.loader,
+            loader: isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
             options: {
-              publicPath: '../',
-              hmr: isDev,
+              // publicPath: '../',
+              // hmr: isDev,
             },
           },
           'css-loader',

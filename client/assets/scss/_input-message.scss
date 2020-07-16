@@ -1,0 +1,38 @@
+.input-message {
+  display: flex;
+  margin: 15px;
+  background-color: $bgBlue500;
+  overflow: hidden;
+  border-radius: 10px;
+
+  &__button {
+    font-size: 36px;
+    text-align: center;
+    color: $textGray700;
+    border-radius: 5px;
+    padding: 5px 5px 15px 5px;
+    &:hover {
+      color: $textBlue100;
+    }
+    &:focus {
+      background-color: $bgTeel600;
+    }
+  }
+  &__input {
+    flex: 1 0 95%;
+    font-size: 14px;
+    color: $textGray700;
+    // border-radius: 5px;
+    border: 1 solid $bgBlue500;
+    background-color: $bgBlue500;
+    &:focus {
+      background-color: $textBlue100;
+    }
+  }
+  .input-container{
+  //   padding: 10px 0;
+  //   overflow: auto;
+    display: flex;
+    flex: 1 0 100%;
+  }
+}

@@ -3,18 +3,18 @@ import { Link } from 'react-router-dom'
 import SidebarHeader from './sidebarHeader'
 import ChannelsList from './channelsList'
 import ListDirectMessages from './listDirectMessages'
-import UsersName from './usersName'
+import UserName from './userName'
 import ChannelsTitle from './channelsTitle'
 
 const Sidebar = () => (
-  <div className="bg-blue-800 text-blue-100 w-1/5 pb-6 hidden md:block">
+  <div className="sidebar">
     <SidebarHeader />
-    <UsersName />
+    <UserName />
     <ChannelsTitle />
     <ChannelsList />
-    <div className="px-4 mb-3 font-sans">Direct Messages</div>
+    <div className="sidebar__channels-title channels-header">Direct Messages</div>
     <ListDirectMessages />
-    <div className="px-4 mb-3 font-sans">Applications</div>
+    <div className="sidebar__channels-title channels-header">Applications</div>
     <Link to="/login">login </Link>
     <Link to="/secret">secret </Link>
   </div>

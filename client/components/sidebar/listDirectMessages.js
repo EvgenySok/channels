@@ -1,36 +1,37 @@
 import React from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { updateCurrentChannel } from '../../redux/reducers/messageActions'
 
 const ListDirectMessages = () => {
-  const arrayDirectMessages = [
-    {
-      isOnlin: true,
-      name: 'Olivia Dunham',
-      isMe: true,
-      id: 0,
-    },
-    {
-      isOnlin: true,
-      name: 'Adam Bishop',
-      isMe: false,
-      id: 1,
-    },
-    {
-      isOnlin: false,
-      name: 'killgt',
-      isMe: false,
-      id: 2,
-    },
-  ]
+  const dispatch = useDispatch()
+  const { users, currentChannel } = useSelector((store) => store.messageReducer)
+  const { userId } = useSelector((store) => store.loginReducer.user)
 
   return (
     <div>
-      {arrayDirectMessages.map((member) => (
-        <div key={member.id} className="flex items-center mb-3 px-4">
-          <span className={`${member.isOnlin ? 'bg-green-400' : 'border'} rounded-full block w-2 h-2 mr-2`} />
-          <span>
-            {member.name}
-            {member.isMe ? <i className="text-sm">(me)</i> : ''}
-          </span>
+      {users.map((member) => (
+        <div
+          key={member.id}
+          className={`${currentChannel.channelId === member.id ? 'current-channel' : ''} sidebar__user-name`}
+        >
+          <a
+            href="#"
+            onClick={() =>
+              dispatch(
+                updateCurrentChannel([
+                  member.id,
+                  member.firstName,
+                  `private chat with ${member.firstName} ${member.lastName}`,
+                ])
+              )
+            }
+          >
+            <span className={`dot ${member.isOnline ? 'dot__online' : ''}`} />
+            <span>
+              {`${member.firstName} ${typeof member.lastName === 'undefined' ? '' : member.lastName}`}
+              {userId === member.id ? <i className="">(me)</i> : ''}
+            </span>
+          </a>
         </div>
       ))}
     </div>

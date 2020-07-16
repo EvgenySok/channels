@@ -1,24 +1,13 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
-import { signIn, signOut, setMessages } from '../../redux/reducers/loginActions'
+import { signIn, setMessages } from '../../redux/reducers/loginActions'
 
 const FooterLoginForm = ({ isLoginForm, setIsLoginForm }) => {
   const dispatch = useDispatch()
   return (
     <div className="footer">
-      <button
-        className="button-blue"
-        type="button"
-        onClick={() => dispatch(signIn())}
-      >
+      <button className="button-blue" type="button" onClick={() => dispatch(signIn())}>
         Sign In
-      </button>
-      <button
-        className="button-blue"
-        type="button"
-        onClick={() => dispatch(signOut())}
-      >
-        Sign out
       </button>
       <a
         className="link"

@@ -1,46 +1,33 @@
-import React, { useState } from 'react'
+import React from 'react'
+import ContentEditable from 'react-contenteditable'
+import { useDispatch, useSelector } from 'react-redux'
+import { updateCurrentMessage, saveMessage } from '../redux/reducers/messageActions'
 
 const InputMessage = () => {
-  const [input, setInput] = useState('')
+  const dispatch = useDispatch()
+  const currentMessage = useSelector((state) => state.messageReducer.currentMessage)
 
-  const channel = {
-    name: '#general',
-  }
-
-  const controlInput = (e) => {
-    e.preventDefault()
-    setInput(e.target.value)
+  const handleChange = (e) => {
+    dispatch(updateCurrentMessage(e.target.value))
   }
 
   const sendMessage = (e) => {
     if (e.key === 'Enter' || e.type === 'click') {
-      if (input.trim()) {
-        console.log('Send message!!!')
-        setInput('')
+      if (currentMessage.trim()) {
+        console.log('console:', currentMessage)
+        dispatch(saveMessage(currentMessage))
       }
     }
   }
 
   return (
-    <div>
-      <div className="flex m-6 rounded-lg border-2 border-blue-300 overflow-hidden">
-        <span
-          className="text-3xl text-grey px-3 border-r-2 border-blue-300 focus:outline-none focus:bg-blue-300"
-          role="button"
-          tabIndex={0}
-          onClick={sendMessage}
-          onKeyDown={sendMessage}
-        >
-          +
-        </span>
-        <input
-          type="text"
-          className="w-full px-4 focus:outline-none focus:bg-blue-300"
-          placeholder={`Message to ${channel.name}`}
-          value={input}
-          onChange={controlInput}
-          onKeyDown={sendMessage}
-        />
+    <div className="input-message">
+      <div className="input-message__button" role="button" tabIndex={0} onClick={sendMessage} onKeyDown={sendMessage}>
+        +
+      </div>
+
+      <div className="chat-input-wrapper">
+        <ContentEditable className="chat-input" html={currentMessage} onChange={handleChange} />
       </div>
     </div>
   )
