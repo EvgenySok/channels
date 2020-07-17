@@ -1,7 +1,6 @@
 import React from 'react'
 import ContentEditable from 'react-contenteditable'
 import { useDispatch, useSelector } from 'react-redux'
-import htmlToText from 'html-to-text'
 import htmlToMarkdown from 'html-to-markdown'
 
 
@@ -12,14 +11,6 @@ const InputMessage = () => {
   const currentMessage = useSelector((state) => state.messageReducer.currentMessage)
 
   const handleChange = (e) => {
-    // const text = htmlToText.fromString(e.target.value, {
-    //   format: {
-    //     heading(elem, fn, options) {
-    //       const h = fn(elem.children, options)
-    //       return `====\n${h.toUpperCase()}\n====`
-    //     },
-    //   },
-    // })
 
     dispatch(updateCurrentMessage(htmlToMarkdown.convert(e.target.value)))
   }

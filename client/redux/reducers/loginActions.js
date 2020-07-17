@@ -1,13 +1,12 @@
+import { push } from 'connected-react-router'
 import {
   UPDATE_FIRST_NAME_FIELD,
   UPDATE_LAST_NAME_FIELD,
   UPDATE_PASSWORD_FIELD,
   UPDATE_EMAIL_FIELD,
   LOGIN,
-  // CHANGE_ERRORS,
   SET_MESSAGE_FOR_LOGIN_FORM,
 } from './types'
-import history from '../history'
 
 export const updateFirstName = (firstName) => ({
   type: UPDATE_FIRST_NAME_FIELD,
@@ -82,10 +81,12 @@ export const signIn = () => {
             user: {
               firstName: data.firstName,
               lastName: data.lastName,
+              userId: data._id,
             },
           },
         })
       })
+
       .catch((data) => data.json().then((d) => dispatch(setMessages(d))))
   }
 }
@@ -102,10 +103,11 @@ export function trySignIn() {
             user: {
               firstName: data.firstName,
               lastName: data.lastName,
+              userId: data._id,
             },
           },
         })
-        // history.push('/private')
+        dispatch(push('/'))
       })
       .catch((e) => e)
   }
@@ -126,7 +128,7 @@ export function signOut() {
             },
           },
         })
-        history.push('/')
+        dispatch(push('/'))
       })
       .catch((e) => e)
   }

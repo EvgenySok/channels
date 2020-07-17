@@ -18,6 +18,11 @@ router.get('/:secretLinc', async (req, res) => {
 
       await user.save()
 
+    //   return res.status(200).json({
+    //     success:true,
+    //     redirectUrl: '/'
+    // })
+      
       return res.status(201).json([
         {
           msg: 'Mail is confirmed !!! Success!!! ',

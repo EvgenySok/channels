@@ -16,6 +16,7 @@ const store = configureStore()
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const authed = useSelector((s) => s.loginReducer)
+  console.log('authed', authed)
   const func = (props) =>
     !!authed.user.firstName && !!authed.token ? <Component {...props} /> : <Redirect to={{ pathname: '/login' }} />
   return <Route {...rest} render={func} />
@@ -27,7 +28,7 @@ const Root = () => {
       <ConnectedRouter history={history}>
         <Startup>
           <Switch>
-            <Route exact path="/" component={() => <Home />} />
+            <PrivateRoute exact path="/" component={() => <Home />} />
             <Route exact path="/login" component={() => <LoginPage />} />
             <PrivateRoute exact path="/secret" component={() => <SecretPage />} />
             <Route component={() => <Home />} />

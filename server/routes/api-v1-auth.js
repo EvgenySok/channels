@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken')
 const shortid = require('shortid')
 const User = require('../models/user')
 const UsersWithoutConfirmation = require('../models/userWithoutConfirmation')
-const { sendMailToCompleteRegistration } = require('../services/nodemailer')
+const { sendMailToCompleteRegistration } = require('../services/mailgun')
 
 const router = express.Router()
 require('dotenv').config()
@@ -38,10 +38,10 @@ router.post(
 
       const hashedPassword = await bcrypt.hash(password, 12)
       let secretLinc = await bcrypt.hash(shortid.generate(), 12)
-      secretLinc = [...secretLinc].filter(it => it !== '/').join('')
-      
+      secretLinc = [...secretLinc].filter((it) => it !== '/').join('')
+
       const user = new UsersWithoutConfirmation({ secretLinc, firstName, lastName, email, password: hashedPassword })
-      // await user.save()
+      await user.save()
 
       const temporaryLinc = `${URL}/registration-confirmation-mail/${secretLinc}`
 
@@ -49,7 +49,7 @@ router.post(
 
       return res.status(201).json([
         {
-          msg: 'User created. To complete the resistance, follow the link in the mail. Get it done in 30 minutes!!! ',
+          msg: 'User created. To complete the resistance, follow the link in the mail. Get it done in 30 minutes. ',
           param: 'success',
         },
       ])
@@ -96,7 +96,14 @@ router.post(
       const token = jwt.sign(jwt_payload, SECRET_JWT, { expiresIn: '48h' })
 
       res.cookie('token', token, { maxAge: 1000 * 60 * 60 * 24 * 2 })
-      return res.json({ token, status: 'ok', firstName: user.firstName, lastName: user.lastName })
+
+      return res.json({
+        token,
+        status: 'ok',
+        firstName: user.firstName,
+        lastName: user.lastName,
+        _id: user._id,
+      })
     } catch (e) {
       return res.status(500).json([{ msg: 'Login error' }])
     }
@@ -113,7 +120,13 @@ router.get('/trySignIn', async (req, res) => {
     const token = jwt.sign(jwt_payload, SECRET_JWT, { expiresIn: '48h' })
 
     res.cookie('token', token, { maxAge: 1000 * 60 * 60 * 24 * 2 })
-    return res.json({ token, status: 'ok', firstName: user.firstName, lastName: user.lastName })
+    return res.json({
+      token,
+      status: 'ok',
+      firstName: user.firstName,
+      lastName: user.lastName,
+      _id: user._id,
+    })
   } catch (e) {
     return res.status(500).json(e)
   }

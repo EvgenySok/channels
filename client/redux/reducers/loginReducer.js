@@ -41,8 +41,10 @@ const loginReducer = (state = inicialState, action) => {
     case SET_MESSAGE_FOR_LOGIN_FORM:
       return { ...state, messages: action.payload }
 
-    case LOGIN:
-      return { ...state, token: action.payload.token, user: action.payload.user, password: '', messages: [] }
+    case LOGIN: {
+      console.log('LOGINstate:', { ...state, token: action.payload.token, user: action.payload.user, password: '', messages: [] })
+      
+      return { ...state, token: action.payload.token, user: action.payload.user, password: '', messages: [] }}
 
     default:
       return state
