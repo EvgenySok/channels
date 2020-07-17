@@ -18,21 +18,53 @@
       background-color: $bgTeel600;
     }
   }
-  &__input {
-    flex: 1 0 95%;
+
+  .chat-input-wrapper {
+    // flex:  1 0 100%;
+    display: block;
+    // overflow: hidden;
+    width: 100%;
+    position: relative;
+    z-index: 2;
+    /*background: #32A8E6;*/
+    padding: 0.5em 0;
+    border-radius: 0 0 2px 2px;
+    color: #fff;
+  }
+  
+  .chat-input {
+    word-break: break-word;
+    outline: none;
+    resize: none;
+    overflow: hidden;
+    min-height: 38px;
+    -webkit-flex: 1;
+    flex: 1;
     font-size: 14px;
-    color: $textGray700;
-    // border-radius: 5px;
-    border: 1 solid $bgBlue500;
-    background-color: $bgBlue500;
-    &:focus {
-      background-color: $textBlue100;
-    }
+    padding: 10px 0 7px;
+    cursor: text;
   }
-  .input-container{
-  //   padding: 10px 0;
-  //   overflow: auto;
-    display: flex;
-    flex: 1 0 100%;
+  
+  .chat-input:empty::before {
+    content: "Write something...";
+    color: #2B8EC2;
   }
+
+  // &__input {
+  //   flex: 1 0 95%;
+  //   font-size: 14px;
+  //   color: $textGray700;
+  //   // border-radius: 5px;
+  //   border: 1 solid $bgBlue500;
+  //   background-color: $bgBlue500;
+  //   &:focus {
+  //     background-color: $textBlue100;
+  //   }
+  // }
+  // .input-container{
+  // //   padding: 10px 0;
+  // //   overflow: auto;
+  //   display: flex;
+  //   flex: 1 0 100%;
+  // }
 }

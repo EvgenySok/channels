@@ -13,7 +13,7 @@ const Home = () => {
   // }
 
   return (
-    <div className="">
+    <div className="main-div">
       <div className="main-page">
         <Sidebar />
         <div className="main-page__right">

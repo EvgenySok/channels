@@ -1,5 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
+// import marked from 'marked'
 
 const ChatMessages = () => {
   const { messages, currentChannel } = useSelector((state) => state.messageReducer)
@@ -17,7 +18,8 @@ const ChatMessages = () => {
               <span className="message__content__name">{message.name}</span>
               <span className="message__content__time">{new Date(message.time).toLocaleString()}</span>
             </div>
-            <p className="message__content__text">{message.text}</p>
+            {/* <div className="message__content__text">{marked(message.text)}</div> */}
+            <div className="message__content__text" dangerouslySetInnerHTML={{ __html: message.text }}/>
           </div>
         </div>
       ))}
