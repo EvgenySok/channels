@@ -39,13 +39,13 @@ router.post(
       const hashedPassword = await bcrypt.hash(password, 12)
       let secretLinc = await bcrypt.hash(shortid.generate(), 12)
       secretLinc = [...secretLinc].filter(it => it !== '/').join('')
+      
+      const user = new UsersWithoutConfirmation({ secretLinc, firstName, lastName, email, password: hashedPassword })
+      // await user.save()
 
       const temporaryLinc = `${URL}/registration-confirmation-mail/${secretLinc}`
 
-      const sentMail = await sendMailToCompleteRegistration(email, temporaryLinc)
-      console.log('sentMail', sentMail);
-      const user = new UsersWithoutConfirmation({ secretLinc, firstName, lastName, email, password: hashedPassword })
-      // await user.save()
+      await sendMailToCompleteRegistration(email, temporaryLinc)
 
       return res.status(201).json([
         {

@@ -38,9 +38,13 @@
 // }
 
 // exports.sendMailToCompleteRegistration = sendMailToCompleteRegistration
-const { MAILGUN_API_KEY, MAILGUN_DOMAIN } = process.env
+const { MAILGUN_API_KEY, DOMAIN } = process.env
 
-const mailgun = require('mailgun-js')({ apiKey: MAILGUN_API_KEY, domain: MAILGUN_DOMAIN })
+const mailgun = require('mailgun-js')({
+  apiKey: MAILGUN_API_KEY,
+  domain: DOMAIN,
+  host: 'api.eu.mailgun.net',
+})
 
 const sendMailToCompleteRegistration = (mail, linc) => {
   const message = `To confirm registration, follow the link or ignore this message. ${linc}`
@@ -49,13 +53,12 @@ const sendMailToCompleteRegistration = (mail, linc) => {
     from: 'Excited User <me@samples.mailgun.org>',
     to: mail,
     subject: 'Hello',
-    text: `<b>${message}</b>`,
+    text: message,
   }
 
   mailgun.messages().send(data, (error, body) => {
-    
-    console.log(error)
-    console.log(body)
+    console.log('error',error)
+    console.log('body',body)
   })
 }
 
