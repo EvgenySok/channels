@@ -2,7 +2,7 @@ import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { updateCurrentChannel } from '../../redux/reducers/messageActions'
 
-const ListDirectMessages = () => {
+const UsersList = () => {
   const dispatch = useDispatch()
   const { users, currentChannel } = useSelector((store) => store.messageReducer)
   const { userId } = useSelector((store) => store.loginReducer.user)
@@ -18,11 +18,13 @@ const ListDirectMessages = () => {
             href="#"
             onClick={() =>
               dispatch(
-                updateCurrentChannel([
-                  member.id,
-                  member.firstName,
-                  `private chat with ${member.firstName} ${member.lastName}`,
-                ])
+                updateCurrentChannel({
+                  channelId: member.id,
+                  name: member.firstName,
+                  description: `private chat with ${member.firstName} ${
+                    typeof member.lastName === 'undefined' ? '' : member.lastName
+                  }`,
+                })
               )
             }
           >
@@ -37,4 +39,4 @@ const ListDirectMessages = () => {
     </div>
   )
 }
-export default ListDirectMessages
+export default UsersList

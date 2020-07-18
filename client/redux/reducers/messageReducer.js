@@ -1,4 +1,4 @@
-import { UPDATE_CURRENT_MESSAGE, ADD_MESSAGE, UPDATE_CURRENT_CHANNEL } from './types'
+import { UPDATE_CURRENT_MESSAGE, ADD_MESSAGE, UPDATE_CURRENT_CHANNEL, ADD_CHANNEL } from './types'
 
 const inicialState = {
   currentMessage: '',
@@ -7,11 +7,7 @@ const inicialState = {
     channelId: '',
     description: '',
   },
-  channels: [
-    // [channelId : name]
-    ['123', 'general', 'Here we write all the comments (bugs) that are identified in the process of working with this chat'],
-    ['1234', 'not general'],
-  ],
+  channels: [],
   users: [
     {
       isOnline: true,
@@ -60,7 +56,6 @@ const inicialState = {
       },
     ],
   },
-
 }
 
 const messageReducer = (state = inicialState, action) => {
@@ -68,10 +63,9 @@ const messageReducer = (state = inicialState, action) => {
     case UPDATE_CURRENT_MESSAGE:
       return { ...state, currentMessage: action.payload }
 
-    case UPDATE_CURRENT_CHANNEL: {
-      const [channelId, name, description] = action.payload
-      return { ...state, currentChannel: { channelId, name, description } }
-    }
+    case UPDATE_CURRENT_CHANNEL:
+      return { ...state, currentChannel: action.payload }
+
     case ADD_MESSAGE: {
       const { channelId } = action.payload
       const newMessages =
@@ -81,6 +75,11 @@ const messageReducer = (state = inicialState, action) => {
       return { ...state, messages: newMessages }
     }
 
+    case ADD_CHANNEL: {
+      console.log('ADD_CHANNEL:', { ...state, channels: action.payload })
+      
+      return { ...state, channels: action.payload }
+}
     default:
       return state
   }

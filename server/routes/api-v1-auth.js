@@ -103,6 +103,8 @@ router.post(
         firstName: user.firstName,
         lastName: user.lastName,
         _id: user._id,
+        role: user.role,
+        img: user.img,
       })
     } catch (e) {
       return res.status(500).json([{ msg: 'Login error' }])
@@ -126,6 +128,8 @@ router.get('/trySignIn', async (req, res) => {
       firstName: user.firstName,
       lastName: user.lastName,
       _id: user._id,
+      role: user.role,
+      img: user.img,
     })
   } catch (e) {
     return res.status(500).json(e)

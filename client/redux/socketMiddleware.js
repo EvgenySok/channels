@@ -1,4 +1,5 @@
 import io from 'socket.io-client'
+import { ADD_CHANNEL } from './reducers/types'
 
 const socketMiddleware = () => {
   let socket
@@ -16,30 +17,35 @@ const socketMiddleware = () => {
           break
         }
         socket = io(window.location.origin)
+
         socket.on('connect', () => {
           console.log(`connection established via socket.id: ${socket.id}`)
-
           socket.emit('event1', socket.id)
         })
+
         socket.on('event1', (data) => {   // слушать событие и что-то делать потом
           console.log('event1:', data)
         })
 
-        console.log('socket.id', socket)
+        socket.on('ADD_CHANNEL', (channelsList) => {
+          console.log('ADD_CHANNEL', channelsList)
+          store.dispatch({
+            type: ADD_CHANNEL,
+            payload: channelsList,
+          })
+        })
 
-        socket.on('message1', (message) => {
+        socket.on('ADD_MESSAGE', (message) => {
           console.log('message1')
           store.dispatch({
-            type: 'SOCKET_MESSAGE_RECEIVED',
+            type: 'ADD_MESSAGE',
             payload: message,
           })
         })
         break
       }
-      case 'SEND_WEBSOCKET_MESSAGE': {
-        console.log(action.payload)
-
-        socket.emit('event', { a: 1 })
+      case 'CREATE_WEBSOCKET_MESSAGE': {
+        socket.emit('createMessage', JSON.stringify(action.payload))
         break
       }
       default:

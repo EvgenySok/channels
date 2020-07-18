@@ -7,13 +7,9 @@ const ChannelsList = () => {
   const { channels, currentChannel } = useSelector((store) => store.messageReducer)
 
   return channels.map((channel) => (
-    // channel = [channelId, name, description]
-    <div
-      key={channel[0]}
-      className={`${currentChannel.channelId === channel[0] ? 'current-channel' : ''} channels-list`}
-    >
+    <div key={channel._id} className={`${currentChannel._id === channel._id ? 'current-channel' : ''} channels-list`}>
       <a href="#" onClick={() => dispatch(updateCurrentChannel(channel))}>
-        {currentChannel.channelId === channel[0] ? <span className="">#</span> : ''} {channel[1]}
+        {currentChannel.channelId === channel._id ? <span className="">#</span> : ''} {channel.name}
       </a>
     </div>
   ))

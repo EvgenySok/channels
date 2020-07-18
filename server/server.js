@@ -25,8 +25,6 @@ server.use(bodyParser.json({ limit: '50mb', extended: true }))
 server.use(bodyParser.urlencoded({ limit: '50mb', extended: true, parameterLimit: 50000 }))
 server.use(cookieParser())
 
-
-
 passport.use('jwt', passportJWT)
 
 const app = server.listen(PORT)
@@ -37,6 +35,7 @@ if (ENABLE_SOCKETS) {
 }
 
 server.use('/api/v1/auth', require('./routes/api-v1-auth'))
+server.use('/api/v1/addchannel', require('./routes/create-channel'))
 
 server.get('/api/v1/user-info', role(['admin']), (req, res) => {
   res.json({ status: '123' })

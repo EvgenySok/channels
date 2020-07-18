@@ -82,6 +82,8 @@ export const signIn = () => {
               firstName: data.firstName,
               lastName: data.lastName,
               userId: data._id,
+              role: data.role,
+              img: data.img,
             },
           },
         })
@@ -104,6 +106,8 @@ export function trySignIn() {
               firstName: data.firstName,
               lastName: data.lastName,
               userId: data._id,
+              role: data.role,
+              img: data.img,
             },
           },
         })

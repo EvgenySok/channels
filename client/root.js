@@ -9,7 +9,7 @@ import configureStore, { history } from './redux/configStore'
 import Startup from './startup'
 import Home from './pages/Home'
 import LoginPage from './pages/LoginPage'
-import SecretPage from './pages/SecretPage'
+import CreateCannel from './pages/CreateCannel'
 
 const store = configureStore()
 // getSocket()
@@ -30,7 +30,7 @@ const Root = () => {
           <Switch>
             <PrivateRoute exact path="/" component={() => <Home />} />
             <Route exact path="/login" component={() => <LoginPage />} />
-            <PrivateRoute exact path="/secret" component={() => <SecretPage />} />
+            <PrivateRoute exact path="/createCannel" component={() => <CreateCannel />} />
             <Route component={() => <Home />} />
           </Switch>
         </Startup>
