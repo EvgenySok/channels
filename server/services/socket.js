@@ -4,7 +4,7 @@ const cookie = require('cookie')
 
 const User = require('../models/user')
 const Channel = require('../models/channel')
-const { ChannelsMessages, PrivateMessages } = require('../models/message')
+const { ChannelsMessages, UsersMessages, OneMessage } = require('../models/message')
 
 const router = express.Router()
 require('dotenv').config()
@@ -14,71 +14,109 @@ const { SECRET_JWT } = process.env
 const returnRouter = (io) => {
   let userIdFromToken
   const connections = {} // { _id : socket.id}
-  const channelsList = []
-  Channel.find({}, (err, channels) => {
-    channels.forEach((channel) => {
-      channelsList.push(channel)
-    })
-  })
+  let usersOnline = []
+  // ================================================= CONNECT ================================================================================================
 
-  io.on('connection', (socket) => {
+  io.on('connection', async (socket) => {
     const cookies = cookie.parse(socket.request.headers.cookie || '')
     const { token } = cookies
     userIdFromToken = jwt.verify(token, SECRET_JWT).userId
-    connections[userIdFromToken] = socket.id
-    socket.emit('ADD_CHANNEL', channelsList)
+    if (userIdFromToken) {
+      if (typeof connections[userIdFromToken] !== 'undefined') {
+        socket.disconnect()
+      }
+      connections[userIdFromToken] = socket.id
 
-    // const listChannels = await Channel.exists({ _id: channelId })
+      const user = await User.findOne({ _id: userIdFromToken })
+      const { role, _id, firstName, lastName, img } = user
 
+      if (typeof usersOnline === 'undefined') {
+        usersOnline = [{ role, _id, firstName, lastName, img }]
+      } else {
+        usersOnline = [...usersOnline, { role, _id, firstName, lastName, img }]
+      }
 
-    console.log(`Object.keys(io.sockets.sockets): ${Object.keys(io.sockets.sockets)}`)
-    console.log(`io.of('/').adapter): ${Object.keys(io.of('/').adapter)}`)
+      console.log('usersOnline:', usersOnline)
+      console.log('connections:', connections)
+
+      socket.emit('ADD_USER', usersOnline)
+      // sending channels messegers
+      await Channel.find({}, (err, channels) => {
+        const channelsList = []
+        channels.forEach((channel) => {
+          channelsList.push(channel)
+        })
+        socket.emit('ADD_CHANNEL', channelsList)
+      })
+      await ChannelsMessages.find({}, (err, channelsMessages) => {
+        socket.emit('ADD_MESSAGE', JSON.stringify(channelsMessages))
+      })
+      // sending privat messegers
+      await UsersMessages.find({ _id }, { messages: 1, _id: 0 }, (err, userMessages) => {
+        const arrayUserMes = userMessages[0].messages
+        const listUsersId = arrayUserMes.map((mes) => mes.userId).filter((it, id, array) => array.indexOf(it) === id)
+        const sortedMes = listUsersId.map((userId) => ({
+          _id: userId,
+          messages: arrayUserMes.filter((mes) => mes.userId === userId),
+        }))
+        socket.emit('ADD_MESSAGE', JSON.stringify(sortedMes))
+      })
+    }
+
+    // console.log(`Object.keys(io.sockets.sockets): ${Object.keys(io.sockets.sockets)}`)
+    // console.log(`io.of('/').adapter): ${Object.keys(io.of('/').adapter)}`)
     // io.sockets.to(userId).emit(event, data)
-
-    socket.emit('message1', socket.id)
-
-    socket.on('event', (data) => {   // слушать событие и что-то делать потом
-      console.log('event1:', data)
-    })
-    // io.emit('broadcast', /* … */); // emit an event to all connected sockets
-    // socket.emit('request', /* … */); // emit an event to the socket
-
-
-    socket.on('createMessage', async (data) => {
+    // ========================================= CREATE_WEBSOCKET_MESSAGE ===================================================================================
+    socket.on('CREATE_WEBSOCKET_MESSAGE', async (data) => {
       const { channelId, userId, img, user, text } = JSON.parse(data)
-      // message = {
-      //   [0]   channelId: '123',
-      //   [0]   userId: '5f1178271c888e0724a77f38',
-      //   [0]   img: 'https://i.imgur.com/8Km9tLL.jpg',
-      //   [0]   user: 'Evgeny Sokov',
-      //   [0]   text: 'jytjy'
-      //   [0] }
-
-      // channelId это канал? тогда сохраняем в этот канал и отправляем всем пользователям
-      let doesChannalExit
+      // is valid channelId ?
       if (channelId.match(/^[0-9a-fA-F]{24}$/)) {
-        doesChannalExit = await Channel.exists({ _id: channelId })
+        const doesChannalExit = await Channel.exists({ _id: channelId })
+        const message = new OneMessage({ user, userId, img, text, time: +new Date() })
+        // for channels
         if (doesChannalExit) {
-          const channelMessage = new ChannelsMessages({ user, userId, img, text })
-          await channelMessage.save()
-          console.log('channelMessage:', channelMessage)
-          io.emit('broadcast', /* … */)
+          const query = { _id: channelId }
+          const update = { $push: { messages: message } }
+          const options = { upsert: true, new: true, setDefaultsOnInsert: true }
+
+          ChannelsMessages.findOneAndUpdate(query, update, options, (err) => {
+            if (err) {
+              console.log('channelMessage err:', err.message)
+            } else {
+              io.emit('ADD_MESSAGE', JSON.stringify([{ _id: channelId, messages: [message._doc] }]))
+              socket.emit('UPDATE_CURRENT_MESSAGE')
+            }
+          })
         }
-        // в противном случае сохраняем двум пользователям, 
-        // отправляем им это сообщение
-        // чистим инпут отправителя активировать, деактивировать кнопку
+        // for users
         else {
-          const privateMessage = new PrivateMessages({ user, userId, img, text })
-          console.log('privateMessage:', privateMessage)
+          const query = channelId === userId ? { _id: { $in: [userId] } } : { _id: { $in: [userId, channelId] } }
+          const update = { $push: { messages: message } }
+          const options = { upsert: true, new: true, setDefaultsOnInsert: true }
+
+          UsersMessages.updateMany(query, update, options, (err) => {
+            if (err) {
+              console.log('UsersMessages err:', err.message)
+            } else {
+              io.emit('ADD_MESSAGE', JSON.stringify([{ _id: channelId, messages: [message._doc] }]))
+              socket.emit('UPDATE_CURRENT_MESSAGE')
+            }
+          })
         }
       } else {
-        console.log('not valid channelId:', channelId)
+        return new Error('not valid channelId')
       }
     })
+    // ================================================= DISCONNECT ================================================================================================
+
     socket.on('disconnect', () => {
       const user = Object.entries(connections).find((connect) => connect[1] === socket.id)
       if (user) {
-        delete connections[user[0]]
+        const userId = user[0]
+        usersOnline = usersOnline.find((it) => it._id === userId)
+        delete connections[userId]
+        console.log('usersOnline:', usersOnline)
+        console.log('connections:', connections)
       }
     })
   })

@@ -16,7 +16,6 @@ const store = configureStore()
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const authed = useSelector((s) => s.loginReducer)
-  console.log('authed', authed)
   const func = (props) =>
     !!authed.user.firstName && !!authed.token ? <Component {...props} /> : <Redirect to={{ pathname: '/login' }} />
   return <Route {...rest} render={func} />

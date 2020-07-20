@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { signOut } from '../redux/reducers/loginActions'
 
 const TopBar = () => {
-  const { name, description } = useSelector((store) => store.messageReducer.currentChannel)
+  const { name, description } = useSelector((store) => store.chatReducer.currentChannel)
   const dispatch = useDispatch()
 
   const [inputSerch, setInputSearch] = useState('')

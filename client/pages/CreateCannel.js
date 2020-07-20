@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 
-import { createChannel } from '../redux/reducers/messageActions'
+import { createChannel } from '../redux/reducers/chatActions'
 
 const SecretPage = () => {
   const dispatch = useDispatch()

@@ -31,11 +31,11 @@ const app = server.listen(PORT)
 
 if (ENABLE_SOCKETS) {
   const io = socketIo(app)
-  server.use('/socket.io', require('./services/socket')(io))
+  server.use('/socket.io', require('./services/socket')(io)) // require('./services/socket')(io);
+  server.use('/api/v1/addchannel', require('./routes/create-channel')(io))
 }
 
 server.use('/api/v1/auth', require('./routes/api-v1-auth'))
-server.use('/api/v1/addchannel', require('./routes/create-channel'))
 
 server.get('/api/v1/user-info', role(['admin']), (req, res) => {
   res.json({ status: '123' })

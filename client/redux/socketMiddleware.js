@@ -1,8 +1,9 @@
 import io from 'socket.io-client'
-import { ADD_CHANNEL } from './reducers/types'
+import { ADD_CHANNEL, ADD_MESSAGE, ADD_USER } from './reducers/types'
+import { updateCurrentMessage } from './reducers/chatActions'
 
 const socketMiddleware = () => {
-  let socket
+  let socket = null
   return (store) => (next) => async (action) => {
     if (typeof process.env.ENABLE_SOCKETS === 'undefined' && process.env.ENABLE_SOCKETS === false) {
       return next(action)
@@ -19,33 +20,37 @@ const socketMiddleware = () => {
         socket = io(window.location.origin)
 
         socket.on('connect', () => {
-          console.log(`connection established via socket.id: ${socket.id}`)
-          socket.emit('event1', socket.id)
-        })
-
-        socket.on('event1', (data) => {   // слушать событие и что-то делать потом
-          console.log('event1:', data)
+          console.log(`connection established socket.id: ${socket.id}`)
         })
 
         socket.on('ADD_CHANNEL', (channelsList) => {
-          console.log('ADD_CHANNEL', channelsList)
           store.dispatch({
             type: ADD_CHANNEL,
             payload: channelsList,
           })
         })
 
-        socket.on('ADD_MESSAGE', (message) => {
-          console.log('message1')
+        socket.on('ADD_USER', (users) => {
           store.dispatch({
-            type: 'ADD_MESSAGE',
-            payload: message,
+            type: ADD_USER,
+            payload: users,
           })
+        })
+
+        socket.on('ADD_MESSAGE', (message) => {
+          store.dispatch({
+            type: ADD_MESSAGE,
+            payload: JSON.parse(message),
+          })
+        })
+
+        socket.on('UPDATE_CURRENT_MESSAGE', () => {
+          store.dispatch(updateCurrentMessage(''))
         })
         break
       }
       case 'CREATE_WEBSOCKET_MESSAGE': {
-        socket.emit('createMessage', JSON.stringify(action.payload))
+        socket.emit('CREATE_WEBSOCKET_MESSAGE', JSON.stringify(action.payload))
         break
       }
       default:

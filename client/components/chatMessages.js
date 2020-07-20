@@ -3,15 +3,15 @@ import { useSelector } from 'react-redux'
 // import marked from 'marked'
 
 const ChatMessages = () => {
-  const { messages, currentChannel } = useSelector((state) => state.messageReducer)
-  const { channelId } = currentChannel
+  const { messages, currentChannel } = useSelector((state) => state.chatReducer)
+  const { _id } = currentChannel
 
-  return typeof messages[channelId] === 'undefined' ? (
+  return typeof messages[_id] === 'undefined' ? (
     <div className="chat-messages"> No posts yet </div>
   ) : (
     <div className="chat-messages">
-      {messages[channelId].map((message) => (
-        <div className="message" key={message.id}>
+      {messages[_id].map((message) => (
+        <div className="message" key={message._id}>
           <img src={message.img} alt={message.user} />
           <div className="message__content">
             <div className="">
