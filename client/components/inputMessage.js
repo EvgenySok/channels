@@ -31,24 +31,26 @@ const InputMessage = () => {
   }
   return (
     <div className="input-message">
-      <div
-        className="input-message__button"
-        role="button"
-        tabIndex={0}
-        onClick={createMessage}
-        onKeyDown={createMessage}
-      >
-        +
+      <div className="input-container">
+        <div
+          className="input-message__button"
+          role="button"
+          tabIndex={0}
+          onClick={createMessage}
+          onKeyDown={createMessage}
+        >
+          +
       </div>
 
-      <div className="chat-input-wrapper">
-        <ContentEditable
-          className="chat-input"
-          html={currentMessage}
-          onChange={handleChange}
-          onKeyDown={onKeyDown}
-          onPaste={onPaste}
-        />
+        <div className="chat-input-wrapper">
+          <ContentEditable
+            className="chat-input"
+            html={currentMessage}
+            onChange={handleChange}
+            onKeyDown={onKeyDown}
+            onPaste={onPaste}
+          />
+        </div>
       </div>
     </div>
   )

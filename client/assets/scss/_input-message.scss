@@ -1,12 +1,11 @@
 .input-message {
-  display: flex;
   margin: 15px;
   background-color: $bgBlue500;
-  overflow: hidden;
   border-radius: 10px;
   &__button {
     font-size: 36px;
     text-align: center;
+    text-align: justify;
     color: $textGray700;
     border-radius: 5px;
     padding: 5px 5px 15px 5px;
@@ -17,7 +16,9 @@
       background-color: $bgTeel600;
     }
   }
-
+  .input-container {
+    display: flex;
+  }
   .chat-input-wrapper {
     display: block;
 
@@ -39,7 +40,7 @@
     -webkit-flex: 1;
     flex: 1;
     font-size: 14px;
-    padding: 2vw 2vw 2vw 0;
+    padding: 1vw 1vw 1vw 0;
     cursor: text;
   }
 
