@@ -19,6 +19,7 @@ const UsersList = () => {
             onClick={() =>
               dispatch(
                 updateCurrentChannel({
+                  scrollPosition: member.scrollPosition,
                   _id: member._id,
                   name: member.firstName,
                   description: `private chat with ${member.firstName} ${

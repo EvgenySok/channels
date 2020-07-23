@@ -87,6 +87,7 @@ export const signIn = () => {
             },
           },
         })
+        dispatch(push('/'))
       })
 
       .catch((data) => data.json().then((d) => dispatch(setMessages(d))))

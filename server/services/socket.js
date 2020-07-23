@@ -21,58 +21,66 @@ const returnRouter = (io) => {
     const cookies = cookie.parse(socket.request.headers.cookie || '')
     const { token } = cookies
     userIdFromToken = jwt.verify(token, SECRET_JWT).userId
+    // have a token from a cookie?
     if (userIdFromToken) {
-      if (typeof connections[userIdFromToken] !== 'undefined') {
-        socket.disconnect()
-      }
-      connections[userIdFromToken] = socket.id
+      // is this user already online?
+      if (typeof connections[userIdFromToken] === 'undefined') {
+        connections[userIdFromToken] = socket.id
 
-      const user = await User.findOne({ _id: userIdFromToken })
-      const { role, _id, firstName, lastName, img } = user
+        const user = await User.findOne({ _id: userIdFromToken })
+        const { role, _id, firstName, lastName, img } = user
 
-      if (typeof usersOnline === 'undefined') {
-        usersOnline = [{ role, _id, firstName, lastName, img }]
+        if (typeof usersOnline === 'undefined') {
+          usersOnline = [{ role, _id, firstName, lastName, img }]
+        } else {
+          socket.emit('ADD_USER', usersOnline)
+          socket.broadcast.emit('ADD_USER', [{ role, _id, firstName, lastName, img }])
+          usersOnline = [...usersOnline, { role, _id, firstName, lastName, img }]
+        }
       } else {
-        usersOnline = [...usersOnline, { role, _id, firstName, lastName, img }]
+        // if already online...
+        // socket.disconnect( )
       }
 
       console.log('usersOnline:', usersOnline)
       console.log('connections:', connections)
 
-      socket.emit('ADD_USER', usersOnline)
       // sending channels messegers
       await Channel.find({}, (err, channels) => {
-        const channelsList = []
-        channels.forEach((channel) => {
-          channelsList.push(channel)
-        })
-        socket.emit('ADD_CHANNEL', channelsList)
+        if (err) {
+          console.log('Channel err:', err.message)
+        } else {
+          const channelsList = []
+          channels.forEach((channel) => {
+            channelsList.push(channel)
+          })
+          socket.emit('ADD_CHANNEL', channelsList)
+        }
       })
       await ChannelsMessages.find({}, (err, channelsMessages) => {
-        socket.emit('ADD_MESSAGE', JSON.stringify(channelsMessages))
+        if (err) {
+          console.log('ChannelsMessages err:', err.message)
+        } else {
+          socket.emit('ADD_MESSAGE', JSON.stringify(channelsMessages))
+        }
       })
       // sending privat messegers
-      await UsersMessages.find({ _id }, { messages: 1, _id: 0 }, (err, userMessages) => {
-        const arrayUserMes = userMessages[0].messages
-        const listUsersId = arrayUserMes.map((mes) => mes.userId).filter((it, id, array) => array.indexOf(it) === id)
-        const sortedMes = listUsersId.map((userId) => ({
-          _id: userId,
-          messages: arrayUserMes.filter((mes) => mes.userId === userId),
-        }))
-        socket.emit('ADD_MESSAGE', JSON.stringify(sortedMes))
+      await UsersMessages.find({ _id: userIdFromToken }, { privateMessages: 1, _id: 0 }, (err, userMessages) => {
+        if (err) {
+          console.log('UsersMessages err:', err.message)
+        } else if (userMessages[0]) {
+          socket.emit('ADD_MESSAGE', JSON.stringify([userMessages[0].privateMessages]))
+        }
       })
     }
 
-    // console.log(`Object.keys(io.sockets.sockets): ${Object.keys(io.sockets.sockets)}`)
-    // console.log(`io.of('/').adapter): ${Object.keys(io.of('/').adapter)}`)
-    // io.sockets.to(userId).emit(event, data)
     // ========================================= CREATE_WEBSOCKET_MESSAGE ===================================================================================
     socket.on('CREATE_WEBSOCKET_MESSAGE', async (data) => {
       const { channelId, userId, img, user, text } = JSON.parse(data)
+      const message = new OneMessage({ user, userId, img, text, time: +new Date() })
       // is valid channelId ?
       if (channelId.match(/^[0-9a-fA-F]{24}$/)) {
         const doesChannalExit = await Channel.exists({ _id: channelId })
-        const message = new OneMessage({ user, userId, img, text, time: +new Date() })
         // for channels
         if (doesChannalExit) {
           const query = { _id: channelId }
@@ -89,19 +97,47 @@ const returnRouter = (io) => {
           })
         }
         // for users
-        else {
-          const query = channelId === userId ? { _id: { $in: [userId] } } : { _id: { $in: [userId, channelId] } }
-          const update = { $push: { messages: message } }
-          const options = { upsert: true, new: true, setDefaultsOnInsert: true }
+        else if (channelId !== userId) {
+          console.log('console:', channelId, userId)
 
-          UsersMessages.updateMany(query, update, options, (err) => {
+          const queryForUser = { _id: userId, 'privateMessages._id': channelId }
+          const queryForChannel = { _id: channelId, 'privateMessages._id': userId }
+
+          const update = { $push: { 'privateMessages.messages': message } }
+          const options = { upsert: true, new: true, setDefaultsOnInsert: true }
+          UsersMessages.findOneAndUpdate(queryForUser, update, options, (err) => {
             if (err) {
               console.log('UsersMessages err:', err.message)
             } else {
-              io.emit('ADD_MESSAGE', JSON.stringify([{ _id: channelId, messages: [message._doc] }]))
+              socket.emit('ADD_MESSAGE', JSON.stringify([{ _id: channelId, messages: [message._doc] }]))
               socket.emit('UPDATE_CURRENT_MESSAGE')
             }
           })
+          UsersMessages.findOneAndUpdate(queryForChannel, update, options, (err) => {
+            if (err) {
+              console.log('UsersMessages err:', err.message)
+            } else {
+              io.to(connections[channelId.toString()]).emit(
+                'ADD_MESSAGE',
+                JSON.stringify([{ _id: userId, messages: [message._doc] }]))
+            }
+          }) 
+
+          // const query =   { _id: { $in: [userId, channelId] } } // { _id: userId }  //
+          // const update = { $push: { messages: message } }
+          // const options = { upsert: true, new: true, setDefaultsOnInsert: true, usePushEach: true }
+          // UsersMessages.updateMany(query, update, options, (err) => {
+          //   if (err) {
+          //     console.log('UsersMessages err:', err.message)
+          //   } else {
+          //     socket.emit('ADD_MESSAGE', JSON.stringify([{ _id: channelId, messages: [message._doc] }]))
+          //     socket.emit('UPDATE_CURRENT_MESSAGE')
+          //     io.to(connections[channelId.toString()]).emit(
+          //       'ADD_MESSAGE',
+          //       JSON.stringify([{ _id: userId, messages: [message._doc] }])
+          //     )
+          //   }
+          // })
         }
       } else {
         return new Error('not valid channelId')
@@ -111,9 +147,13 @@ const returnRouter = (io) => {
 
     socket.on('disconnect', () => {
       const user = Object.entries(connections).find((connect) => connect[1] === socket.id)
+
       if (user) {
         const userId = user[0]
-        usersOnline = usersOnline.find((it) => it._id === userId)
+        io.emit('USER_LOGOUT', userId)
+        if (typeof usersOnline !== 'undefined') {
+          usersOnline = usersOnline.filter((it) => it._id.toString() !== userId)
+        }
         delete connections[userId]
         console.log('usersOnline:', usersOnline)
         console.log('connections:', connections)

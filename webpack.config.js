@@ -83,16 +83,16 @@ const config = {
             },
           },
           'css-loader',
-          {
-            loader: 'postcss-loader',
-            options: {
-              ident: 'postcss',
-              plugins: [
-                require('tailwindcss'),
+          // {
+          //   loader: 'postcss-loader',
+          //   options: {
+          //     ident: 'postcss',
+          //     plugins: [
+                // require('tailwindcss'),
                 // require('autoprefixer'),
-              ],
-            },
-          },
+              // ],
+            // },
+          // },
           'sass-loader',
         ],
         exclude: /node_modules/,

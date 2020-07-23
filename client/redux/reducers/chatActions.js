@@ -1,5 +1,5 @@
 import { push } from 'connected-react-router'
-import { UPDATE_CURRENT_MESSAGE, UPDATE_CURRENT_CHANNEL } from './types'
+import { UPDATE_CURRENT_MESSAGE, UPDATE_CURRENT_CHANNEL, UPDATE_CHANNEL_SCROLL_POSITION } from './types'
 
 export const updateCurrentMessage = (mes) => ({
   type: UPDATE_CURRENT_MESSAGE,
@@ -9,6 +9,11 @@ export const updateCurrentMessage = (mes) => ({
 export const updateCurrentChannel = (channelId) => ({
   type: UPDATE_CURRENT_CHANNEL,
   payload: channelId,
+})
+
+export const updateChannelScrollPosition = (channelId, scrollPosition) => ({
+  type: UPDATE_CHANNEL_SCROLL_POSITION,
+  payload: { channelId, scrollPosition },
 })
 
 export const createChannel = ({ name, description }) => {

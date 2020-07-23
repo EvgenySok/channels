@@ -1,5 +1,5 @@
 import io from 'socket.io-client'
-import { ADD_CHANNEL, ADD_MESSAGE, ADD_USER } from './reducers/types'
+import { ADD_CHANNEL, ADD_MESSAGE, ADD_USER, USER_LOGOUT } from './reducers/types'
 import { updateCurrentMessage } from './reducers/chatActions'
 
 const socketMiddleware = () => {
@@ -33,6 +33,13 @@ const socketMiddleware = () => {
         socket.on('ADD_USER', (users) => {
           store.dispatch({
             type: ADD_USER,
+            payload: users,
+          })
+        })
+
+        socket.on('USER_LOGOUT', (users) => {
+          store.dispatch({
+            type: USER_LOGOUT,
             payload: users,
           })
         })
