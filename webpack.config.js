@@ -28,10 +28,14 @@ const optimization = () => {
 
 const config = {
   mode: 'development',
-  entry: ['babel-polyfill', resolve(__dirname, 'client/index.js')],
+  entry: ['babel-polyfill', resolve(__dirname, 'client/index.tsx')],
   optimization: optimization(),
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js'],
+  },
   output: {
     path: resolve(__dirname, 'dist'),
+    // filename: 'bundle.js',
     filename: '[name].[hash:8].js',
   },
   devServer: {
@@ -73,6 +77,11 @@ const config = {
         },
       },
       {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
+      },
+      {
         test: /\.s[ac]ss$/,
         use: [
           {
@@ -83,16 +92,6 @@ const config = {
             },
           },
           'css-loader',
-          // {
-          //   loader: 'postcss-loader',
-          //   options: {
-          //     ident: 'postcss',
-          //     plugins: [
-                // require('tailwindcss'),
-                // require('autoprefixer'),
-              // ],
-            // },
-          // },
           'sass-loader',
         ],
         exclude: /node_modules/,

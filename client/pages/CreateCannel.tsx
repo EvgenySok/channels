@@ -3,12 +3,12 @@ import { useDispatch } from 'react-redux'
 
 import { createChannel } from '../redux/reducers/chatActions'
 
-const SecretPage = () => {
+const SecretPage: React.FC  = () => {
   const dispatch = useDispatch()
-  const [channelName, setChannelName] = useState('')
-  const [channeldiscription, setChanneldiscription] = useState('')
+  const [channelName, setChannelName] = useState<string>('')
+  const [channeldiscription, setChanneldiscription] = useState<string>('')
 
-  const sendForm = (e) => {
+  const sendForm = (e: React.MouseEvent) => {
     e.preventDefault()
     dispatch(createChannel({ name: channelName, description: channeldiscription }))
     setChannelName('')

@@ -8,11 +8,13 @@ import socketMiddleware from './socketMiddleware'
 
 export const history = createBrowserHistory()
 
+const rootReducer=createRootReducer(history)
+
 const composeFunc = process.env.NODE_ENV === 'development' ? composeWithDevTools : compose
 
 export default function configureStore(preloadedState) {
   const store = createStore(
-    createRootReducer(history),
+    rootReducer,
     preloadedState,
     composeFunc(applyMiddleware(routerMiddleware(history), socketMiddleware(), thunk))
   )

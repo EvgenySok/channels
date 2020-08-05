@@ -1,7 +1,7 @@
 import React from 'react'
 import LoginForm from '../components/loginForm/_loginForm'
 
-const LoginPage = () => {
+const LoginPage: React.FC  = () => {
   return (
     <>
       <div className="login-body">

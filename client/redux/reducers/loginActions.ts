@@ -8,33 +8,54 @@ import {
   SET_MESSAGE_FOR_LOGIN_FORM,
 } from './types'
 
-export const updateFirstName = (firstName) => ({
+type UpdateFirstNameActionType = {
+  type: typeof UPDATE_FIRST_NAME_FIELD
+  payload: string
+}
+export const updateFirstName = (firstName: string): UpdateFirstNameActionType => ({
   type: UPDATE_FIRST_NAME_FIELD,
   payload: firstName,
 })
 
-export const updateLastName = (lastName) => ({
+type UpdateLastNameActionType = {
+  type: typeof UPDATE_LAST_NAME_FIELD
+  payload: string
+}
+export const updateLastName = (lastName: string): UpdateLastNameActionType => ({
   type: UPDATE_LAST_NAME_FIELD,
   payload: lastName,
 })
 
-export const updateEmail = (email) => ({
+type UpdateEmailActionType = {
+  type: typeof UPDATE_EMAIL_FIELD
+  payload: string
+}
+export const updateEmail = (email: string): UpdateEmailActionType => ({
   type: UPDATE_EMAIL_FIELD,
   payload: email,
 })
 
-export const updatePassword = (password) => ({
+type UpdatePasswordActionType = {
+  type: typeof UPDATE_PASSWORD_FIELD
+  payload: string
+}
+export const updatePassword = (password: string): UpdatePasswordActionType => ({
   type: UPDATE_PASSWORD_FIELD,
   payload: password,
 })
 
-export const setMessages = (err) => ({
+type SetMessageForLoginFormActionType = {
+  type: typeof SET_MESSAGE_FOR_LOGIN_FORM
+  payload: LoginErrorsMessagesType
+}
+type LoginErrorsMessagesType = [{ msg: string, param: string }]
+export const setMessages = (err: LoginErrorsMessagesType): SetMessageForLoginFormActionType => ({
   type: SET_MESSAGE_FOR_LOGIN_FORM,
   payload: err,
 })
-
+// -------
 export const register = () => {
-  return (dispatch, getState) => {
+  return (dispatch: any, getState: any) => {
     const { firstName, lastName, email, password } = getState().loginReducer
     fetch('api/v1/auth/registration', {
       method: 'POST',
@@ -54,12 +75,12 @@ export const register = () => {
         dispatch(setMessages(data))
         dispatch(updatePassword(''))
       })
-      .catch((data) => data.json().then((d) => dispatch(setMessages(d))))
+      .catch((data) => data.json().then((d: LoginErrorsMessagesType) => dispatch(setMessages(d))))
   }
 }
-
+// ------
 export const signIn = () => {
-  return (dispatch, getState) => {
+  return (dispatch: any, getState: any) => {
     const { email, password } = getState().loginReducer
     fetch('api/v1/auth/login', {
       method: 'POST',
@@ -81,7 +102,7 @@ export const signIn = () => {
             user: {
               firstName: data.firstName,
               lastName: data.lastName,
-              userId: data._id,
+              _id: data._id,
               role: data.role,
               img: data.img,
             },
@@ -90,12 +111,12 @@ export const signIn = () => {
         dispatch(push('/'))
       })
 
-      .catch((data) => data.json().then((d) => dispatch(setMessages(d))))
+      .catch((data) => data.json().then((d: LoginErrorsMessagesType) => dispatch(setMessages(d))))
   }
 }
-
+// ------
 export function trySignIn() {
-  return (dispatch) => {
+  return (dispatch: any) => {
     fetch('/api/v1/auth/trySignIn')
       .then((r) => r.json())
       .then((data) => {
@@ -106,7 +127,7 @@ export function trySignIn() {
             user: {
               firstName: data.firstName,
               lastName: data.lastName,
-              userId: data._id,
+              _id: data._id,
               role: data.role,
               img: data.img,
             },
@@ -117,9 +138,9 @@ export function trySignIn() {
       .catch((e) => e)
   }
 }
-
+// -------
 export function signOut() {
-  return (dispatch) => {
+  return (dispatch: any) => {
     fetch('/api/v1/auth/signOut')
       .then((r) => r.json())
       .then(() => {

@@ -5,7 +5,7 @@ import TopBar from '../components/topBar'
 import ChatMessages from '../components/chatMessages'
 import InputMessage from '../components/inputMessage'
 
-const Home = () => {
+const Home: React.FC  = () => {
   // const dispatch = useDispatch()
 
   // if (store.productList[0] === undefined) {

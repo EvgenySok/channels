@@ -18,7 +18,7 @@ export const updateChannelScrollPosition = (channelId, scrollPosition) => ({
 
 export const createChannel = ({ name, description }) => {
   return (dispatch, getState) => {
-    const { userId } = getState().loginReducer.user
+    const { _id } = getState().loginReducer.user
     fetch('api/v1/addchannel', {
       method: 'POST',
       headers: {
@@ -27,7 +27,7 @@ export const createChannel = ({ name, description }) => {
       body: JSON.stringify({
         name,
         description,
-        userId,
+        _id,
       }),
     })
       .then((r) => (r.ok ? r : Promise.reject(r)))

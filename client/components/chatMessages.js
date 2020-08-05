@@ -56,21 +56,21 @@ const ChatMessages = () => {
   return typeof currentMessages === 'undefined' ? (
     <div className="chat-messages"> No posts yet </div>
   ) : (
-      <div className="chat-messages" onScroll={elementScrollData} ref={messagesEndRef}>
-        {currentMessages.map((message) => (
-          <div className="message" key={message._id}>
-            <img src={message.img} alt={message.user} />
-            <div className="message__content">
-              <div className="">
-                <span className="message__content__name">{message.name}</span>
-                <span className="message__content__time">{new Date(message.time).toLocaleString()}</span>
-              </div>
-              <div className="message__content__text" dangerouslySetInnerHTML={{ __html: clean(message.text) }} />
+    <div className="chat-messages" onScroll={elementScrollData} ref={messagesEndRef}>
+      {currentMessages.map((message) => (
+        <div className="message" key={message._id}>
+          <img src={message.img} alt={message.user} />
+          <div className="message__content">
+            <div className="">
+              <span className="message__content__name">{message.name}</span>
+              <span className="message__content__time">{new Date(message.time).toLocaleString()}</span>
             </div>
+            <div className="message__content__text" dangerouslySetInnerHTML={{ __html: clean(message.text) }} />
           </div>
-        ))}
-        {/* <div ref={messagesEndRef} /> */}
-      </div>
-    )
+        </div>
+      ))}
+      {/* <div ref={messagesEndRef} /> */}
+    </div>
+  )
 }
 export default ChatMessages

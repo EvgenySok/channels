@@ -1,19 +1,21 @@
 import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { signOut } from '../redux/reducers/loginActions'
+import { RootState } from '../redux/reducers/rootReducer'
 
-const TopBar = () => {
-  const { name, description } = useSelector((store) => store.chatReducer.currentChannel)
+const TopBar: React.FC = () => {  
+  //  ------
+  const { name, description } = useSelector((store: any) => store.chatReducer.currentChannel)
   const dispatch = useDispatch()
 
-  const [inputSerch, setInputSearch] = useState('')
+  const [inputSerch, setInputSearch] = useState<string>('')
 
-  const controlInput = (e) => {
+  const controlInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault()
     setInputSearch(e.target.value)
   }
 
-  const startSearch = (e) => {
+  const startSearch = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       setInputSearch('')
     }

@@ -4,7 +4,6 @@ import { ConnectedRouter } from 'connected-react-router'
 import { Switch, Route, Redirect } from 'react-router-dom'
 
 import configureStore, { history } from './redux/configStore'
-// import getSocket from './redux/configSocket'
 
 import Startup from './startup'
 import Home from './pages/Home'
@@ -12,7 +11,6 @@ import LoginPage from './pages/LoginPage'
 import CreateCannel from './pages/CreateCannel'
 
 const store = configureStore()
-// getSocket()
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const authed = useSelector((s) => s.loginReducer)

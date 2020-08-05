@@ -6,22 +6,47 @@ import {
   ADD_USER,
   UPDATE_CHANNEL_SCROLL_POSITION,
   USER_LOGOUT,
+  UserType,
+  ChannelType,
+  MessageType,
 } from './types'
 
-const inicialState = {
-  currentMessage: '',
+export type InicialStateChatReducer = {
+  currentMessage: string | null,
+  currentChannel: ChannelType,
+  channels: Array<ChannelType>,
+  users: Array<UserType>,
+  messages: { [key: string]: Array<MessageType> },
+}
+
+const inicialState: InicialStateChatReducer = {
+  currentMessage: null,
   currentChannel: {
+    _id: '',
     name: '',
-    channelId: '',
     description: '',
     scrollPosition: null,
   },
-  channels: [], // { _id, name, description}
-  users: [], // { role, _id, firstName, lastName, img , isOnline, scrollPosition}
-  messages: {}, // {_id: [{message},{message}, ...], _id: [{message},{message}, ...]} message = {user, userId, img, time, text}
+  channels: [{
+    _id: '',
+    name: '',
+    description: '',
+    scrollPosition: null,
+  }],
+  users: [],
+  messages: {
+    _id: [{
+      user: '',
+      userId: '',
+      img: '',
+      time: null,
+      text: '',
+      _id: '',
+    }]
+  },
 }
-
-const chatReducer = (state = inicialState, action) => {
+// -----
+const chatReducer = (state = inicialState, action: any) => {
   switch (action.type) {
     case UPDATE_CURRENT_MESSAGE:
       return { ...state, currentMessage: action.payload }
@@ -30,17 +55,17 @@ const chatReducer = (state = inicialState, action) => {
       return { ...state, currentChannel: action.payload }
 
     case UPDATE_CHANNEL_SCROLL_POSITION: {
-      const { channelId, scrollPosition } = action.payload
+      const { _id, scrollPosition } = action.payload
 
       const currentChannel = { ...state.currentChannel, scrollPosition }
       const channels = state.channels.map((channel) => {
-        if (channel._id === channelId) {
+        if (channel._id === _id) {
           return { ...channel, scrollPosition }
         }
         return channel
       })
       const users = state.users.map((user) => {
-        if (user._id === channelId) {
+        if (user._id === _id) {
           return { ...user, scrollPosition }
         }
         return user
@@ -50,28 +75,28 @@ const chatReducer = (state = inicialState, action) => {
 
     case ADD_MESSAGE: {
       const newMessages = state.messages
-      action.payload.forEach((channel) => {
+      action.payload.forEach((channel: { _id: string, messages: [MessageType] }) => {
         const { _id, messages } = channel
         if (typeof state.messages[_id] === 'undefined') {
           newMessages[_id] = messages
         } else {
-          newMessages[_id] = [...state.messages[_id], ...messages]
+          newMessages[_id] = [...newMessages[_id], ...messages]
         }
       })
       return { ...state, messages: newMessages }
     }
 
     case ADD_CHANNEL:
-      return { ...state, channels: action.payload.map((it) => ({ ...it, scrollPosition: null })) }
+      return { ...state, channels: action.payload.map((it: ChannelType) => ({ ...it, scrollPosition: null })) }
 
     case ADD_USER: {
       if (typeof state.users[0] === 'undefined') {
-        const newUsers = action.payload.map((user) => ({ ...user, isOnline: true, scrollPosition: null }))
+        const newUsers = action.payload.map((user: UserType) => ({ ...user, isOnline: true, scrollPosition: null }))
         return { ...state, users: newUsers }
       }
       let newUsers = state.users
       const currentUsersIds = state.users.map((user) => user._id)
-      action.payload.forEach((candidate) => {
+      action.payload.forEach((candidate: UserType) => {
         if (!currentUsersIds.includes(candidate._id)) {
           newUsers = [...newUsers, { ...candidate, isOnline: true, scrollPosition: null }]
         } else {
