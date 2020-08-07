@@ -10,7 +10,7 @@ const SecretPage: React.FC  = () => {
 
   const sendForm = (e: React.MouseEvent) => {
     e.preventDefault()
-    dispatch(createChannel({ name: channelName, description: channeldiscription }))
+    dispatch(createChannel( channelName, channeldiscription ))
     setChannelName('')
     setChanneldiscription('')
   }

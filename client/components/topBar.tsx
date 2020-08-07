@@ -1,12 +1,14 @@
 import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { signOut } from '../redux/reducers/loginActions'
-import { RootState } from '../redux/reducers/rootReducer'
+import { RootStateType, useTypedSelector } from '../redux/configStore'
 
 const TopBar: React.FC = () => {  
   //  ------
-  const { name, description } = useSelector((store: any) => store.chatReducer.currentChannel)
+  // const { name, description } = useSelector((store: RootStateType) => store.chatReducer.currentChannel)
+  const { name, description } = useTypedSelector(store => store.chatReducer.currentChannel)
   const dispatch = useDispatch()
+  
 
   const [inputSerch, setInputSearch] = useState<string>('')
 

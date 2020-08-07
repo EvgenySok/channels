@@ -1,16 +1,15 @@
-import { combineReducers } from 'redux'
+import { combineReducers } from '@reduxjs/toolkit'
 import { connectRouter } from 'connected-react-router'
+import { History } from 'history'
 
 import loginReducer from './loginReducer'
 import chatReducer from './chatReducer'
-// ------------
-const createRootReducer = (history: any) =>
+
+const rootReducer = (history: History) =>
   combineReducers({
     router: connectRouter(history),
     chatReducer,
     loginReducer,
   })
 
-export default createRootReducer
-
-export type RootState = ReturnType<typeof createRootReducer>
+export default rootReducer

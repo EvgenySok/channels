@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import React, { useState } from 'react'
 import NameFields from './nameFields'
 import FooterLoginForm from './footerLoginForm'

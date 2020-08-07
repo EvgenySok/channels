@@ -100,11 +100,15 @@ router.post(
       return res.json({
         token,
         status: 'ok',
-        firstName: user.firstName,
-        lastName: user.lastName,
-        _id: user._id,
-        role: user.role,
-        img: user.img,
+        user: {
+          firstName: user.firstName,
+          lastName: user.lastName,
+          _id: user._id,
+          role: user.role,
+          img: user.img,
+          isOnline: true,
+          scrollPosition: null,
+        },
       })
     } catch (e) {
       return res.status(500).json([{ msg: 'Login error' }])
@@ -125,11 +129,15 @@ router.get('/trySignIn', async (req, res) => {
     return res.json({
       token,
       status: 'ok',
-      firstName: user.firstName,
-      lastName: user.lastName,
-      _id: user._id,
-      role: user.role,
-      img: user.img,
+      user: {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        _id: user._id,
+        role: user.role,
+        img: user.img,
+        isOnline: true,
+        scrollPosition: null,
+      }
     })
   } catch (e) {
     return res.status(500).json(e)

@@ -1,4 +1,5 @@
-import { CREATE_WEBSOCKET_MESSAGE, CreateWebSocketMessageType } from './types'
+import { CREATE_WEBSOCKET_MESSAGE } from './types'
+import { CreateWebSocketMessageType } from '../../typescriptTypes'
 
 // ---
 export const createWebSocketMessage = (mes: string) => {

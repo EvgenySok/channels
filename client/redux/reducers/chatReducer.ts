@@ -1,3 +1,6 @@
+import { SocketMiddlewareTypes } from './../socketMiddleware'
+import { ChatReducerType } from './chatActions'
+import { ChannelType, UserType, MessageType } from './../../typescriptTypes'
 import {
   UPDATE_CURRENT_MESSAGE,
   ADD_MESSAGE,
@@ -6,9 +9,6 @@ import {
   ADD_USER,
   UPDATE_CHANNEL_SCROLL_POSITION,
   USER_LOGOUT,
-  UserType,
-  ChannelType,
-  MessageType,
 } from './types'
 
 export type InicialStateChatReducer = {
@@ -46,7 +46,7 @@ const inicialState: InicialStateChatReducer = {
   },
 }
 // -----
-const chatReducer = (state = inicialState, action: any) => {
+const chatReducer = (state = inicialState, action: ChatReducerType | SocketMiddlewareTypes): InicialStateChatReducer => {
   switch (action.type) {
     case UPDATE_CURRENT_MESSAGE:
       return { ...state, currentMessage: action.payload }
@@ -75,7 +75,7 @@ const chatReducer = (state = inicialState, action: any) => {
 
     case ADD_MESSAGE: {
       const newMessages = state.messages
-      action.payload.forEach((channel: { _id: string, messages: [MessageType] }) => {
+      action.payload.forEach((channel: { _id: string, messages: Array<MessageType> }) => {
         const { _id, messages } = channel
         if (typeof state.messages[_id] === 'undefined') {
           newMessages[_id] = messages
