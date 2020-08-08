@@ -1,9 +1,10 @@
+import { ThunkType } from './../configStore'
 import { CREATE_WEBSOCKET_MESSAGE } from './types'
 import { CreateWebSocketMessageType } from '../../typescriptTypes'
 
 // ---
-export const createWebSocketMessage = (mes: string) => {
-  return (dispatch: any, getState: any) => {
+export const createWebSocketMessage = (mes: string):ThunkType => {
+  return (dispatch, getState) => {
     const { firstName, lastName, _id, img } = getState().loginReducer.user
     const { currentChannel } = getState().chatReducer
 

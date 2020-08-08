@@ -1,11 +1,12 @@
-import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import React, { FC } from 'react'
+import { useDispatch } from 'react-redux'
 import { updateCurrentChannel } from '../../redux/reducers/chatActions'
+import { useTypedSelector } from '../../redux/configStore'
 
-const UsersList = () => {
+const UsersList: FC = () => {
   const dispatch = useDispatch()
-  const { users, currentChannel } = useSelector((store) => store.chatReducer)
-  const { _id } = useSelector((store) => store.loginReducer.user)
+  const { users, currentChannel } = useTypedSelector((store) => store.chatReducer)
+  const { _id } = useTypedSelector((store) => store.loginReducer.user)
 
   return (
     <>
@@ -24,7 +25,7 @@ const UsersList = () => {
                   name: member.firstName,
                   description: `private chat with ${member.firstName} ${
                     typeof member.lastName === 'undefined' ? '' : member.lastName
-                  }`,
+                    }`,
                 })
               )
             }

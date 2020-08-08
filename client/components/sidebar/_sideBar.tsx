@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { FC } from 'react'
 import { Link } from 'react-router-dom'
 import SidebarHeader from './sidebarHeader'
 import ChannelsList from './channelsList'
@@ -6,7 +6,7 @@ import UsersList from './usersList'
 import UserName from './userName'
 import ChannelsTitle from './channelsTitle'
 
-const Sidebar = () => (
+const Sidebar: FC = () => (
   <div className="sidebar">
     <SidebarHeader />
     <UserName />

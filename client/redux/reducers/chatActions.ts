@@ -1,4 +1,4 @@
-import { RootStateType } from './../configStore'
+import { RootStateType, ThunkType } from './../configStore'
 import { ThunkAction, Action } from '@reduxjs/toolkit'
 import { ChannelType } from './../../typescriptTypes'
 import { push } from 'connected-react-router'
@@ -30,8 +30,6 @@ export const updateChannelScrollPosition = (_id: string, scrollPosition: number)
   type: UPDATE_CHANNEL_SCROLL_POSITION,
   payload: { _id, scrollPosition },
 })
-
-type ThunkType = ThunkAction<void, RootStateType, unknown, Action<string>>
 
 export const createChannel = (channelName: string, channeldiscription: string): ThunkType => {
   return (dispatch, getState) => {

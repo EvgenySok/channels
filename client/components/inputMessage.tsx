@@ -1,20 +1,22 @@
-import React from 'react'
-import ContentEditable from 'react-contenteditable'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { MouseEvent, ClipboardEvent, KeyboardEvent, FC } from 'react'
+import ContentEditable, { ContentEditableEvent } from 'react-contenteditable'
+import { useDispatch } from 'react-redux'
+// @ts-ignore
 import htmlToMarkdown from 'html-to-markdown'
 
 import { updateCurrentMessage } from '../redux/reducers/chatActions'
 import { createWebSocketMessage } from '../redux/reducers/socketActions'
+import { useTypedSelector } from '../redux/configStore'
 
-const InputMessage = () => {
+const InputMessage: FC = () => {
   const dispatch = useDispatch()
-  const currentMessage = useSelector((state) => state.chatReducer.currentMessage)
+  const currentMessage = useTypedSelector((state) => state.chatReducer.currentMessage)
 
-  const handleChange = (e) => {
+  const handleChange = (e: ContentEditableEvent) => {
     dispatch(updateCurrentMessage(htmlToMarkdown.convert(e.target.value)))
   }
 
-  const createMessage = (e) => {
+  const createMessage = (e: KeyboardEvent<HTMLDivElement> & MouseEvent) => {
     if (e.key === 'Enter' || e.type === 'click') {
       if (currentMessage.trim()) {
         dispatch(createWebSocketMessage(currentMessage))
@@ -22,10 +24,10 @@ const InputMessage = () => {
     }
   }
 
-  const onKeyDown = (e) =>
+  const onKeyDown = (e: KeyboardEvent) =>
     e.ctrlKey || (e.metaKey && ![`c`, `v`, `ArrowLeft`, `ArrowRight`].includes(e.key) && e.preventDefault())
 
-  const onPaste = (e) => {
+  const onPaste = (e: ClipboardEvent) => {
     console.log(e)
     // dispatch(updateCurrentMessage(e.target.value))
   }

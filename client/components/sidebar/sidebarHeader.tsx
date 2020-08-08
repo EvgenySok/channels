@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { FC } from 'react'
 
-const SidebarHeader = () => (
+const SidebarHeader: FC = () => (
   <>
     <h1 className="sidebar__header">
       <span>Channels</span>

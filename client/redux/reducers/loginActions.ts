@@ -1,65 +1,21 @@
-import { AppDispatch } from './../configStore'
-import { ThunkAction, Action } from '@reduxjs/toolkit'
-import { RootStateType } from '../configStore'
-import { LoginErrorsMessagesType, UserType, LoginResponseType } from './../../typescriptTypes'
+import { ThunkType, InferActionsTypes } from './../configStore'
+import { LoginErrorsMessagesType, LoginResponseType, UserType } from './../../typescriptTypes'
 import { push } from 'connected-react-router'
-import { History } from 'history'
-// import { push } from 'react-router-redux'
-import {
-  UPDATE_FIRST_NAME_FIELD,
-  UPDATE_LAST_NAME_FIELD,
-  UPDATE_PASSWORD_FIELD,
-  UPDATE_EMAIL_FIELD,
-  LOGIN,
-  SET_MESSAGE_FOR_LOGIN_FORM,
-} from './types'
 
-type UpdateFirstNameActionType = {
-  type: typeof UPDATE_FIRST_NAME_FIELD
-  payload: string
+export type ActionsLoginReducerTypes = InferActionsTypes<typeof loginActions>
+
+export const loginActions = {
+  updateFirstName: (firstName: string) => ({ type: 'UPDATE_FIRST_NAME_FIELD', firstName } as const),
+  updateLastName: (lastName: string) => ({ type: 'UPDATE_LAST_NAME_FIELD', lastName } as const),
+  updateEmail: (email: string) => ({ type: 'UPDATE_EMAIL_FIELD', email } as const),
+  updatePassword: (password: string) => ({ type: 'UPDATE_PASSWORD_FIELD', password } as const),
+  setMessagesForLoginForm: (err: LoginErrorsMessagesType) => ({ type: 'SET_MESSAGE_FOR_LOGIN_FORM', err } as const),
+  login: (data?: LoginResponseType) => ({
+    type: 'LOGIN',
+    token: data ? data.token : '',
+    user: data ? data.user : { firstName: '', lastName: '', _id: '', role: [], img: '', isOnline: true, scrollPosition: null, }
+  } as const)
 }
-export const updateFirstName = (firstName: string): UpdateFirstNameActionType => ({
-  type: UPDATE_FIRST_NAME_FIELD,
-  payload: firstName,
-})
-
-type UpdateLastNameActionType = {
-  type: typeof UPDATE_LAST_NAME_FIELD
-  payload: string
-}
-export const updateLastName = (lastName: string): UpdateLastNameActionType => ({
-  type: UPDATE_LAST_NAME_FIELD,
-  payload: lastName,
-})
-
-type UpdateEmailActionType = {
-  type: typeof UPDATE_EMAIL_FIELD
-  payload: string
-}
-export const updateEmail = (email: string): UpdateEmailActionType => ({
-  type: UPDATE_EMAIL_FIELD,
-  payload: email,
-})
-
-type UpdatePasswordActionType = {
-  type: typeof UPDATE_PASSWORD_FIELD
-  payload: string
-}
-export const updatePassword = (password: string): UpdatePasswordActionType => ({
-  type: UPDATE_PASSWORD_FIELD,
-  payload: password,
-})
-
-type SetMessageForLoginFormActionType = {
-  type: typeof SET_MESSAGE_FOR_LOGIN_FORM
-  payload: LoginErrorsMessagesType
-}
-export const setMessagesForLoginForm = (err: LoginErrorsMessagesType): SetMessageForLoginFormActionType => ({
-  type: SET_MESSAGE_FOR_LOGIN_FORM,
-  payload: err,
-})
-
-type ThunkType = ThunkAction<void, RootStateType, unknown, Action<string> >
 
 export const register = (): ThunkType => {
   return (dispatch, getState) => {
@@ -79,26 +35,12 @@ export const register = (): ThunkType => {
       .then((r) => (r.ok ? r : Promise.reject(r)))
       .then((r) => r.json())
       .then((data) => {
-        dispatch(setMessagesForLoginForm(data))
-        dispatch(updatePassword(''))
+        dispatch(loginActions.setMessagesForLoginForm(data))
+        dispatch(loginActions.updatePassword(''))
       })
-      .catch((data) => data.json().then((d: LoginErrorsMessagesType) => dispatch(setMessagesForLoginForm(d))))
+      .catch((data) => data.json().then((d: LoginErrorsMessagesType) => dispatch(loginActions.setMessagesForLoginForm(d))))
   }
 }
-export type LoginActionType = {
-  type: typeof LOGIN
-  payload: {
-    token: string
-    user: UserType,
-  },
-}
-const login = (data?: LoginResponseType): LoginActionType => ({
-  type: LOGIN,
-  payload: {
-    token: data ? data.token : '',
-    user: data ? data.user : { firstName: '', lastName: '', _id: '', role: [], img: '', isOnline: true, scrollPosition: null, }
-  },
-})
 
 export const signIn = (): ThunkType => {
   return (dispatch, getState) => {
@@ -116,11 +58,10 @@ export const signIn = (): ThunkType => {
       .then((r) => (r.ok ? r : Promise.reject(r)))
       .then((r) => r.json())
       .then((data: LoginResponseType) => {
-        dispatch(login(data))
+        dispatch(loginActions.login(data))
         dispatch(push('/'))
       })
-
-      .catch((data) => data.json().then((d: LoginErrorsMessagesType) => dispatch(setMessagesForLoginForm(d))))
+      .catch((data) => data.json().then((d: LoginErrorsMessagesType) => dispatch(loginActions.setMessagesForLoginForm(d))))
   }
 }
 
@@ -129,7 +70,7 @@ export function trySignIn(): ThunkType {
     fetch('/api/v1/auth/trySignIn')
       .then((r) => r.json())
       .then((data) => {
-        dispatch(login(data))
+        dispatch(loginActions.login(data))
         dispatch(push('/'))
       })
       .catch((e) => e)
@@ -141,7 +82,7 @@ export function signOut(): ThunkType {
     fetch('/api/v1/auth/signOut')
       .then((r) => r.json())
       .then(() => {
-        dispatch(login())
+        dispatch(loginActions.login())
         dispatch(push('/'))
       })
       .catch((e) => e)
@@ -158,11 +99,3 @@ export function tryGetUserInfo() {
       .catch((e) => e)
   }
 }
-
-export type LoginReducerTypes =
-  UpdateFirstNameActionType
-  | UpdateLastNameActionType
-  | UpdateEmailActionType
-  | UpdatePasswordActionType
-  | SetMessageForLoginFormActionType
-  | LoginActionType

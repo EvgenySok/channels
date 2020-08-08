@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { FC, KeyboardEvent, MouseEvent } from 'react'
 import { useDispatch } from 'react-redux'
 import { push } from 'connected-react-router'
 
-const ChannelsTitle = () => {
+const ChannelsTitle: FC = () => {
   const dispatch = useDispatch()
   
-  const addChannel = (e) => {
+  const addChannel = (e: KeyboardEvent<HTMLDivElement> & MouseEvent) => {
     if (e.key === 'Enter' || e.type === 'click') {
       dispatch(push('/createCannel'))
     }

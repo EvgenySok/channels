@@ -1,12 +1,13 @@
-import { useEffect } from 'react'
+import { useEffect, FC } from 'react'
 import PropTypes from 'prop-types'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 
 import { trySignIn } from './redux/reducers/loginActions'
+import { useTypedSelector } from './redux/configStore'
 
-const Startup = (props) => {
+const Startup: FC<any> = (props) => {
   const dispatch = useDispatch()
-  const token = useSelector((s) => s.loginReducer.token)
+  const token = useTypedSelector((s) => s.loginReducer.token)
   useEffect(() => {
     if (token) {
       dispatch(trySignIn())

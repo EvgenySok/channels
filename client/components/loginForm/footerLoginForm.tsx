@@ -1,13 +1,13 @@
-import React from 'react'
+import React, { FC } from 'react'
 import { useDispatch } from 'react-redux'
-import { signIn, setMessagesForLoginForm } from '../../redux/reducers/loginActions'
+import { signIn, loginActions } from '../../redux/reducers/loginActions'
 
 type PropsType = {
   isLoginForm: boolean
-  setIsLoginForm: (arg0: boolean) => void
+  setIsLoginForm: (arg: boolean) => void
 }
 
-const FooterLoginForm: React.FC<PropsType> = ({ isLoginForm, setIsLoginForm }) => {
+const FooterLoginForm: FC<PropsType> = ({ isLoginForm, setIsLoginForm }) => {
   const dispatch = useDispatch()
   return (
     <div className="footer">
@@ -18,7 +18,7 @@ const FooterLoginForm: React.FC<PropsType> = ({ isLoginForm, setIsLoginForm }) =
         className="link"
         onClick={() => {
           setIsLoginForm(!isLoginForm)
-          dispatch(setMessagesForLoginForm([{ msg: '', param: '' }]))
+          dispatch(loginActions.setMessagesForLoginForm([{ msg: '', param: '' }]))
         }}
         href="#"
       >

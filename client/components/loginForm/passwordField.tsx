@@ -1,10 +1,11 @@
-import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { updatePassword } from '../../redux/reducers/loginActions'
+import React, { FC } from 'react'
+import { useDispatch } from 'react-redux'
+import { loginActions } from '../../redux/reducers/loginActions'
+import { useTypedSelector } from '../../redux/configStore'
 
-const PasswordField = () => {
+const PasswordField: FC = () => {
   const dispatch = useDispatch()
-  const loginReducer = useSelector((state) => state.loginReducer)
+  const loginReducer = useTypedSelector((state) => state.loginReducer)
   const { password, messages } = loginReducer
 
   const [passwordErr, messageSuccessRegistr] = ['password', 'success'].map((it) => messages.find((i) => i.param === it))
@@ -21,14 +22,14 @@ const PasswordField = () => {
           type="password"
           placeholder="******************"
           value={password}
-          onChange={(e) => dispatch(updatePassword(e.target.value.trim()))}
+          onChange={(e) => dispatch(loginActions.updatePassword(e.target.value.trim()))}
         />
         {passwordErr ? (
           <p className="login-form__bottom-text error-text">{passwordErr.msg}</p>
         ) : (
             <p className="login-form__bottom-text">Enter password</p>
           )}
-          {messageSuccessRegistr ? <p className="login-form__bottom-text saccess-text">{messageSuccessRegistr.msg}</p> : ''}
+        {messageSuccessRegistr ? <p className="login-form__bottom-text saccess-text">{messageSuccessRegistr.msg}</p> : ''}
       </div>
     </>
   )

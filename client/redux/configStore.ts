@@ -1,5 +1,5 @@
 import { useSelector, useDispatch, TypedUseSelectorHook } from 'react-redux'
-import { configureStore, MiddlewareArray } from '@reduxjs/toolkit'
+import { configureStore, MiddlewareArray, ThunkAction, Action } from '@reduxjs/toolkit'
 import { routerMiddleware } from 'connected-react-router'
 import thunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
@@ -23,3 +23,8 @@ export const useTypedSelector: TypedUseSelectorHook<RootStateType> = useSelector
 
 export type AppDispatch = typeof store.dispatch
 export const useAppDispatch = () => useDispatch<AppDispatch>()
+
+type PropertiesTypes<T> = T extends { [key: string]: infer U } ? U : never
+export type InferActionsTypes<T extends { [key: string]: (...args: any[]) => any }> = ReturnType<PropertiesTypes<T>>
+
+export type ThunkType<ReturnType = void> = ThunkAction<ReturnType, RootStateType, unknown, Action<string>>

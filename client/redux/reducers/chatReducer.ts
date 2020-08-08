@@ -12,7 +12,7 @@ import {
 } from './types'
 
 export type InicialStateChatReducer = {
-  currentMessage: string | null,
+  currentMessage: string,
   currentChannel: ChannelType,
   channels: Array<ChannelType>,
   users: Array<UserType>,
@@ -20,7 +20,7 @@ export type InicialStateChatReducer = {
 }
 
 const inicialState: InicialStateChatReducer = {
-  currentMessage: null,
+  currentMessage: '',
   currentChannel: {
     _id: '',
     name: '',
@@ -39,7 +39,7 @@ const inicialState: InicialStateChatReducer = {
       user: '',
       userId: '',
       img: '',
-      time: null,
+      time: 0,
       text: '',
       _id: '',
     }]
