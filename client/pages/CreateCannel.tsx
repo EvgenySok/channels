@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux'
 
 import { createChannel } from '../redux/reducers/chatActions'
 
-const SecretPage: React.FC  = () => {
+const CreateCannel: React.FC  = () => {
   const dispatch = useDispatch()
   const [channelName, setChannelName] = useState<string>('')
   const [channeldiscription, setChanneldiscription] = useState<string>('')
@@ -55,4 +55,4 @@ const SecretPage: React.FC  = () => {
   )
 }
 
-export default SecretPage
+export default CreateCannel

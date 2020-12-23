@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux'
 // @ts-ignore
 import htmlToMarkdown from 'html-to-markdown'
 
-import { updateCurrentMessage } from '../redux/reducers/chatActions'
+import { chatActions } from '../redux/reducers/chatActions'
 import { createWebSocketMessage } from '../redux/reducers/socketActions'
 import { useTypedSelector } from '../redux/configStore'
 
@@ -13,7 +13,7 @@ const InputMessage: FC = () => {
   const currentMessage = useTypedSelector((state) => state.chatReducer.currentMessage)
 
   const handleChange = (e: ContentEditableEvent) => {
-    dispatch(updateCurrentMessage(htmlToMarkdown.convert(e.target.value)))
+    dispatch(chatActions.updateCurrentMessage(htmlToMarkdown.convert(e.target.value)))
   }
 
   const createMessage = (e: KeyboardEvent<HTMLDivElement> & MouseEvent) => {

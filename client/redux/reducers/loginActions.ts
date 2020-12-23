@@ -1,7 +1,8 @@
 import { ThunkType, InferActionsTypes } from './../configStore'
-import { LoginErrorsMessagesType, LoginResponseType, UserType } from './../../typescriptTypes'
+import { MessagesForLoginFormType, LoginResponseType } from './../../typescriptTypes'
 import { push } from 'connected-react-router'
-
+// const fetch = require("node-fetch")
+// declare fetch: any
 export type ActionsLoginReducerTypes = InferActionsTypes<typeof loginActions>
 
 export const loginActions = {
@@ -9,7 +10,7 @@ export const loginActions = {
   updateLastName: (lastName: string) => ({ type: 'UPDATE_LAST_NAME_FIELD', lastName } as const),
   updateEmail: (email: string) => ({ type: 'UPDATE_EMAIL_FIELD', email } as const),
   updatePassword: (password: string) => ({ type: 'UPDATE_PASSWORD_FIELD', password } as const),
-  setMessagesForLoginForm: (err: LoginErrorsMessagesType) => ({ type: 'SET_MESSAGE_FOR_LOGIN_FORM', err } as const),
+  setMessagesForLoginForm: (err: MessagesForLoginFormType) => ({ type: 'SET_MESSAGE_FOR_LOGIN_FORM', err } as const),
   login: (data?: LoginResponseType) => ({
     type: 'LOGIN',
     token: data ? data.token : '',
@@ -17,10 +18,37 @@ export const loginActions = {
   } as const)
 }
 
+// export const register = (): ThunkType => {
+//   return (dispatch, getState) => {
+//     const { firstName, lastName, email, password } = getState().loginReducer
+//     return fetch('api/v1/auth/registration', {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//       body: JSON.stringify({
+//         firstName,
+//         lastName,
+//         email,
+//         password,
+//       }),
+//     })
+//       .then((r) => (console.log('console:', r),
+//        r.ok ? r : Promise.reject(r)))
+//       .then((r) => r.json())
+//       .then((data: MessagesForLoginFormType) => {
+//         dispatch(loginActions.setMessagesForLoginForm(data))
+//         dispatch(loginActions.updatePassword(''))
+//       })
+//       .catch((data) => data.json().then((d: MessagesForLoginFormType) => dispatch(loginActions.setMessagesForLoginForm(d))))
+//   }
+// }
+
 export const register = (): ThunkType => {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const { firstName, lastName, email, password } = getState().loginReducer
-    fetch('api/v1/auth/registration', {
+
+    const result = await fetch('api/v1/auth/registration', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -32,20 +60,22 @@ export const register = (): ThunkType => {
         password,
       }),
     })
-      .then((r) => (r.ok ? r : Promise.reject(r)))
-      .then((r) => r.json())
-      .then((data) => {
-        dispatch(loginActions.setMessagesForLoginForm(data))
-        dispatch(loginActions.updatePassword(''))
-      })
-      .catch((data) => data.json().then((d: LoginErrorsMessagesType) => dispatch(loginActions.setMessagesForLoginForm(d))))
+
+    const data: MessagesForLoginFormType = await result.json()
+
+    if (result.ok) {
+      dispatch(loginActions.setMessagesForLoginForm(data))
+      dispatch(loginActions.updatePassword(''))
+    } else {
+      dispatch(loginActions.setMessagesForLoginForm(data))
+    }
   }
 }
 
 export const signIn = (): ThunkType => {
   return (dispatch, getState) => {
     const { email, password } = getState().loginReducer
-    fetch('api/v1/auth/login', {
+    return fetch('api/v1/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -61,15 +91,15 @@ export const signIn = (): ThunkType => {
         dispatch(loginActions.login(data))
         dispatch(push('/'))
       })
-      .catch((data) => data.json().then((d: LoginErrorsMessagesType) => dispatch(loginActions.setMessagesForLoginForm(d))))
+      .catch((data) => data.json().then((d: MessagesForLoginFormType) => dispatch(loginActions.setMessagesForLoginForm(d))))
   }
 }
 
 export function trySignIn(): ThunkType {
   return (dispatch) => {
-    fetch('/api/v1/auth/trySignIn')
+    return fetch('/api/v1/auth/trySignIn')
       .then((r) => r.json())
-      .then((data) => {
+      .then((data: LoginResponseType) => {
         dispatch(loginActions.login(data))
         dispatch(push('/'))
       })
@@ -79,7 +109,7 @@ export function trySignIn(): ThunkType {
 
 export function signOut(): ThunkType {
   return (dispatch) => {
-    fetch('/api/v1/auth/signOut')
+    return fetch('/api/v1/auth/signOut')
       .then((r) => r.json())
       .then(() => {
         dispatch(loginActions.login())

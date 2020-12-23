@@ -32,9 +32,9 @@ export type CreateWebSocketMessageType = {
   userId: string
 }
 
-export type LoginErrorsMessagesType = Array<{ msg: string, param: string }>
+export type MessagesForLoginFormType = Array<{ msg: string, param: string }>
 
-export type LoginRequestType = [{ msg: string, param: string }]
+// export type LoginRequestType = [{ msg: string, param: string }]
 
 export type LoginResponseType = { token: string, user: UserType }
 

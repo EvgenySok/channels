@@ -1,7 +1,7 @@
 import React, { useLayoutEffect, useRef, RefObject, UIEvent, FC } from 'react'
 import DOMPurify from 'dompurify'
 import { useDispatch } from 'react-redux'
-import { updateChannelScrollPosition } from '../redux/reducers/chatActions'
+import { chatActions } from '../redux/reducers/chatActions'
 import { useTypedSelector } from '../redux/configStore'
 // import marked from 'marked'
 
@@ -28,7 +28,7 @@ const ChatMessages: FC = () => {
 
   const elementScrollData = (e: UIEvent<HTMLElement>) => {
     e.persist()
-    dispath(updateChannelScrollPosition(_id, +e.currentTarget.scrollTop.toFixed(0)))
+    dispath(chatActions.updateChannelScrollPosition(_id, +e.currentTarget.scrollTop.toFixed(0)))
   }
 
   return typeof currentMessages === 'undefined' ? (

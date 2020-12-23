@@ -21,6 +21,11 @@ const optimization = () => {
     return {
       minimize: true,
       minimizer: [new TerserPlugin({ parallel: true }), new OptimizeCSSAssetsWebpackPlugin()],
+      splitChunks: {
+        chunks: 'all',
+        minSize: 20000,
+        maxSize: 250000,
+      }
     }
   }
   return {}
@@ -28,14 +33,15 @@ const optimization = () => {
 
 const config = {
   mode: 'development',
-  entry: ['babel-polyfill', resolve(__dirname, 'client/index.tsx')],
+  entry: {
+    index: ['babel-polyfill', resolve(__dirname, 'client/index.tsx')]
+  },
   optimization: optimization(),
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
   },
   output: {
     path: resolve(__dirname, 'dist'),
-    // filename: 'bundle.js',
     filename: '[name].[hash:8].js',
   },
   devServer: {
@@ -72,7 +78,7 @@ const config = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-env', '@babel/preset-react'],
+            presets: ['@babel/preset-env', '@babel/preset-react']
           },
         },
       },
@@ -86,10 +92,6 @@ const config = {
         use: [
           {
             loader: isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
-            options: {
-              // publicPath: '../',
-              // hmr: isDev,
-            },
           },
           'css-loader',
           'sass-loader',
@@ -97,7 +99,7 @@ const config = {
         exclude: /node_modules/,
       },
       {
-        test: /\.(png|jpg|gif|webp)$/,
+        test: /\.(png|jpe?g|gif|webp|svg)$/,
         use: [
           {
             loader: 'file-loader',

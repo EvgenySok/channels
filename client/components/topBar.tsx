@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { signOut } from '../redux/reducers/loginActions'
-import { RootStateType, useTypedSelector, useAppDispatch } from '../redux/configStore'
+import { useTypedSelector } from '../redux/configStore'
 
 const TopBar: React.FC = () => {
   const { name, description } = useTypedSelector(store => store.chatReducer.currentChannel)

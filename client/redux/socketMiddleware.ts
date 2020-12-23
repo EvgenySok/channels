@@ -1,16 +1,22 @@
+import { InferActionsTypes } from './configStore'
 import { UserType, ChannelType, MessageType } from './../typescriptTypes'
 import io from 'socket.io-client'
-import { ADD_CHANNEL, ADD_MESSAGE, ADD_USER, USER_LOGOUT } from './reducers/types'
-import { updateCurrentMessage } from './reducers/chatActions'
+import { chatActions } from './reducers/chatActions'
 import { Middleware } from 'redux'
 
-type AddChannelType = { type: typeof ADD_CHANNEL, payload: Array<ChannelType> }
-type AddUserType = { type: typeof ADD_USER, payload: Array<UserType> }
-type UserLogoutType = { type: typeof USER_LOGOUT, payload: string }
-type AddMessageType = { type: typeof ADD_MESSAGE, payload: Array<{ _id: string, messages: Array<MessageType> }> }
+export type SocketActionsTypes = InferActionsTypes<typeof socketActions>
+
+export const socketActions = {
+  AddChannel: (channelsList: Array<ChannelType>) => ({ type: 'ADD_CHANNEL', channelsList } as const),
+  AddUser: (users: Array<UserType>) => ({ type: 'ADD_USER', users } as const),
+  UserLogout: (userId: string) => ({ type: 'USER_LOGOUT', userId } as const),
+  AddMessage: (messages: string): { type: 'ADD_MESSAGE', messages: Array<{ _id: string, messages: Array<MessageType> }> } => ({
+      type: 'ADD_MESSAGE', messages: JSON.parse(messages)
+    } as const),
+}
 
 const socketMiddleware = (): Middleware => {
-  let socket: SocketIOClient.Socket | null = null
+  let socket: SocketIOClient.Socket
 
   return (store) => (next) => async (action) => {
     if (typeof process.env.ENABLE_SOCKETS === 'undefined' && process.env.ENABLE_SOCKETS === false) {
@@ -19,10 +25,9 @@ const socketMiddleware = (): Middleware => {
 
     switch (action.type) {
       case 'LOGIN': {
-        if (action.payload.token === '') {
-          socket!.emit('disconnect')
-          socket!.disconnect()
-          socket = null
+        if (action.token === '') {
+          socket.emit('disconnect')
+          socket.disconnect()
           break
         }
         socket = io(window.location.origin)
@@ -32,54 +37,35 @@ const socketMiddleware = (): Middleware => {
         })
 
         socket.on('ADD_CHANNEL', (channelsList: Array<ChannelType>) => {
-          store.dispatch({
-            type: ADD_CHANNEL,
-            payload: channelsList,
-          })
+          store.dispatch(socketActions.AddChannel(channelsList))
         })
 
         socket.on('ADD_USER', (users: Array<UserType>) => {
-          store.dispatch({
-            type: ADD_USER,
-            payload: users,
-          })
+          store.dispatch(socketActions.AddUser(users))
         })
 
         socket.on('USER_LOGOUT', (userId: string) => {
-          store.dispatch({
-            type: USER_LOGOUT,
-            payload: userId,
-          })
+          store.dispatch(socketActions.UserLogout(userId))
         })
 
-        socket.on('ADD_MESSAGE', (message: string) => {
-          store.dispatch({
-            type: ADD_MESSAGE,
-            payload: JSON.parse(message),
-          })
+        socket.on('ADD_MESSAGE', (messages: string) => {
+          store.dispatch(socketActions.AddMessage(messages))
         })
 
         socket.on('UPDATE_CURRENT_MESSAGE', () => {
-          store.dispatch(updateCurrentMessage(''))
+          store.dispatch(chatActions.updateCurrentMessage(''))
         })
         break
       }
       case 'CREATE_WEBSOCKET_MESSAGE': {
-        socket!.emit('CREATE_WEBSOCKET_MESSAGE', JSON.stringify(action.payload))
+        socket.emit('CREATE_WEBSOCKET_MESSAGE', JSON.stringify(action.newMessage))
         break
       }
       default:
         break
     }
-
     return next(action)
   }
 }
 
 export default socketMiddleware
-
-export type SocketMiddlewareTypes =
-  AddChannelType
-  | AddUserType
-  | UserLogoutType
-  | AddMessageType

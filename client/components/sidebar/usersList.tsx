@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import { useDispatch } from 'react-redux'
-import { updateCurrentChannel } from '../../redux/reducers/chatActions'
+import { chatActions } from '../../redux/reducers/chatActions'
 import { useTypedSelector } from '../../redux/configStore'
 
 const UsersList: FC = () => {
@@ -19,12 +19,12 @@ const UsersList: FC = () => {
             href="#"
             onClick={() =>
               dispatch(
-                updateCurrentChannel({
+                chatActions.updateCurrentChannel({
                   scrollPosition: member.scrollPosition,
                   _id: member._id,
                   name: member.firstName,
                   description: `private chat with ${member.firstName} ${
-                    typeof member.lastName === 'undefined' ? '' : member.lastName
+                    typeof member.lastName === null ? '' : member.lastName
                     }`,
                 })
               )

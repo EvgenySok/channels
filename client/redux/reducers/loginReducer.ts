@@ -1,16 +1,12 @@
 import { ActionsLoginReducerTypes } from './loginActions'
-import { UserType, LoginErrorsMessagesType } from './../../typescriptTypes'
+import { UserType, MessagesForLoginFormType } from './../../typescriptTypes'
 import Cookies from 'universal-cookie'
-
-import {
-  LOGIN,
-} from './types'
 
 const cookies = new Cookies()
 
 export type InicialStateLoginReducerType = {
   isLoginForm: boolean
-  messages: LoginErrorsMessagesType
+  messages: MessagesForLoginFormType
   firstName: string
   lastName: string
   email: string
@@ -19,7 +15,7 @@ export type InicialStateLoginReducerType = {
   user: UserType
 }
 
-const inicialState:InicialStateLoginReducerType = {
+export const inicialStateLoginReducer:InicialStateLoginReducerType = {
   isLoginForm: true,
   messages: [],
   firstName: '',
@@ -38,7 +34,7 @@ const inicialState:InicialStateLoginReducerType = {
   },
 }
 
-const loginReducer = (state = inicialState, action: ActionsLoginReducerTypes): InicialStateLoginReducerType => {
+const loginReducer = (state = inicialStateLoginReducer, action: ActionsLoginReducerTypes): InicialStateLoginReducerType => {
   switch (action.type) {
     case 'UPDATE_FIRST_NAME_FIELD':
       return { ...state, firstName: action.firstName }

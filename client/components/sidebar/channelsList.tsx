@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { updateCurrentChannel } from '../../redux/reducers/chatActions'
+import { useDispatch } from 'react-redux'
+import { chatActions } from '../../redux/reducers/chatActions'
 import { useTypedSelector } from '../../redux/configStore'
 
 const ChannelsList: FC = () => {
@@ -10,7 +10,7 @@ const ChannelsList: FC = () => {
   return <> {
     channels.map((channel) => (
       <div key={channel._id} className={`${currentChannel._id === channel._id ? 'current-channel' : ''} channels-list`}>
-        <a href="#" onClick={() => dispatch(updateCurrentChannel(channel))}>
+        <a href="#" onClick={() => dispatch(chatActions.updateCurrentChannel(channel))}>
           {currentChannel._id === channel._id ? <span className="">#</span> : ''} {channel.name}
         </a>
       </div>

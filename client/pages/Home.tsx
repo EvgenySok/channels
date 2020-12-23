@@ -4,6 +4,7 @@ import TopBar from '../components/topBar'
 import ChatMessages from '../components/chatMessages'
 import InputMessage from '../components/inputMessage'
 
+
 const Home: React.FC  = () => {
   return (
     <div className="main-div">
