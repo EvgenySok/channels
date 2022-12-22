@@ -33,7 +33,7 @@
     "express-validator": "^6.6.0",
     "history": "4.10.1",
     "html-to-markdown": "^1.0.0",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "mailgun-js": "^0.22.0",
     "marked": "^1.1.1",
     "milligram": "^1.4.1",
